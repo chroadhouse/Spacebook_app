@@ -1,10 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native'
+
+import signup from './screens/signup';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Testing!</Text>
+      <Text>Test</Text>
       <StatusBar style="auto" />
     </View>
   );
