@@ -74,7 +74,7 @@ class loginScreen extends Component{
         <Button
           title="Don't have an account?"
           color="darkblue"
-          onPress={() => this.props.navigation.navigate('signupScreen')}
+          onPress={() => this.props.navigation.navigate("signupScreen")}
         />
       </ScrollView>
     );

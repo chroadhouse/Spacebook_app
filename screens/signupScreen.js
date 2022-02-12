@@ -44,6 +44,7 @@ class signupScreen extends Component {
   }
 
   render(){
+      //Need to verfiy the password 
       return(
           <ScrollView>
               <TextInput
@@ -60,6 +61,11 @@ class signupScreen extends Component {
                 placeholder="Enter your email..."
                 onChangeText={(email) => this.setState({email})}
                 value={this.state.email}
+              />
+              <TextInput
+                placeholder="Enter your password"
+                onChangeText={(password) => this.setState({password})}
+                value={this.state.password}
               />
               <Button
                 title="Create account"
