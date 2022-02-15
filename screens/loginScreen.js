@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput, Button } from 'react-native-web';
 
-class loginScreen extends Component{
+class LoginScreen extends Component{
   constructor(props){
     super(props);
 
@@ -13,11 +13,10 @@ class loginScreen extends Component{
   }
 
   login = async () => {
-
     //Validation here...
     //validation needs to be to check if the email is a vaid email 
     //What sort of validation do you need for an email ? 
-    if(this.state.email.length > 0 && this.state.password.length > 0){
+    if(this.state.email != "" && this.state.password != ""){
       if(this.state.email.includes("@")){
         return fetch("http://localhost:3333/api/1.0.0/login", {
             method: 'post',
@@ -74,11 +73,11 @@ class loginScreen extends Component{
         <Button
           title="Don't have an account?"
           color="darkblue"
-          onPress={() => this.props.navigation.navigate("signupScreen")}
+          onPress={() => this.props.navigation.navigate("Signup")}
         />
       </ScrollView>
     );
   }
 }
 
-export default loginScreen
+export default LoginScreen;

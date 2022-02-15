@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import loginScreen from './screens/loginScreen';
-import profileScreen from './screens/profileScreen';
-import signupScreen from './screens/signupScreen';
+import LoginScreen from './screens/LoginScreen.js';
+import ProfileScreen from './screens/ProfileScreen.js';
+import SignupScreen from './screens/SignupScreen.js';
+import SeachSvreen from './screens/SearchScreen.js';
 
-const Drawer = createDrawerNavigator();
+
+const Tab = createBottomTabNavigator();
 
 class App extends Component{
     render(){
-        return (
+        return(
+            //Need to do some conditional rendering
             <NavigationContainer>
-                <Drawer.Navigator initialRouteName="login">
-                    <Drawer.Screen name="login" component={loginScreen}/>
-                    <Drawer.Screen name="Signup" component={signupScreen}/>
-                </Drawer.Navigator>     
-            </NavigationContainer>
+                <Tab.Navigator>
+                    <Tab.Screen name="Login" component={LoginScreen}/>
+                    <Tab.Screen name="Signup" component={SignupScreen}/>
+                    <Tab.Screen name="ProfileScreen" component={(ProfileScreen)}/>
+                </Tab.Navigator>
+            </NavigationContainer>          
         );
     }
 }

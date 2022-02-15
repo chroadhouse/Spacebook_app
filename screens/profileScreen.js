@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class profileScreen extends Component{
+class ProfileScreen extends Component{
   constructor(props){
     super(props);
 
@@ -42,7 +42,7 @@ class profileScreen extends Component{
       })
       .then((responseJson) => {
           this.setState({
-            isLoading: false;
+            isLoading: false,
             listData: responseJson
           })
       })
@@ -54,7 +54,7 @@ class profileScreen extends Component{
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     if(value == null){
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('loginScreen');
     }
   };
 
@@ -91,4 +91,4 @@ class profileScreen extends Component{
   }
 }
 
-export default profileScreen;
+export default ProfileScreen;
