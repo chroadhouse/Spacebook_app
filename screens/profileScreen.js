@@ -83,10 +83,11 @@ class ProfileScreen extends Component{
       );
     }else{
       return (
-        <ScrollView>
-          <Text>{this.state.firstName}</Text>
-          <Text>{this.state.lastName}</Text>
-        </ScrollView>
+        <View>
+          <ScrollView>
+            <Text>{this.state.firstName} {this.state.lastName}</Text>
+          </ScrollView>
+        </View>
       );
     }
     
