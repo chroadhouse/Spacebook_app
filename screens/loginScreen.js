@@ -13,9 +13,6 @@ class LoginScreen extends Component{
   }
 
   login = async () => {
-    //Validation here...
-    //validation needs to be to check if the email is a vaid email 
-    //What sort of validation do you need for an email ? 
     if(this.state.email != "" && this.state.password != ""){
       if(this.state.email.includes("@")){
         return fetch("http://localhost:3333/api/1.0.0/login", {
@@ -37,6 +34,7 @@ class LoginScreen extends Component{
         .then(async (responseJson) => {
                 console.log(responseJson);
                 await AsyncStorage.setItem('@session_token', responseJson.token);
+                await AsyncStorage.setItem('user_id', responseJson.id);
                 this.props.navigation.navigate("profileScreen");
         })
         .catch((error) => {

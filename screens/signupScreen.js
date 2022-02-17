@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput, Button } from 'react-native-web';
 
 class SignupScreen extends Component {
@@ -57,7 +56,7 @@ class SignupScreen extends Component {
                 <TextInput
                   placeholder="Enter your last name..."
                   onChangeText={(last_name) => this.setState({last_name})}
-                  value={this.state.fir}
+                  value={this.state.last_na}
                 />
                 <TextInput
                   placeholder="Enter your email..."

@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList} from 'react-native';
+import {View, Text, FlatList, ScrollView, TouchableNativeFeedbackComponent} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class ProfileScreen extends Component{
   constructor(props){
     super(props);
-
+    //Update the states and then update the data
     this.state = {
       isLoading: true,
-      listData: []
+      firstName: "",
+      lastName: "",
+
     }
   }
 
@@ -25,11 +27,16 @@ class ProfileScreen extends Component{
   }
 
   getData = async () => {
-    const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/search",{
+    //This is just a generic statment I think 
+    const token = await AsyncStorage.getItem('@session_token');
+    const id = await AsyncStorage.getItem('user_id');
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id,{
+        'method': 'get',
         'headers': {
-          'X-Authorization': value
-        }
+          'X-Authorization': token,
+          'Content-Type': 'application/json'
+
+        },
       })
       .then((response) => {
           if(response.status ===200){
@@ -43,10 +50,12 @@ class ProfileScreen extends Component{
       .then((responseJson) => {
           this.setState({
             isLoading: false,
-            listData: responseJson
+            firstName: responseJson.first_name,
+            lastName: responseJson.last_name
           })
       })
       .catch((error) => {
+          console.log("Something is going wrog")
           console.log(error);
       })
   }
@@ -74,17 +83,10 @@ class ProfileScreen extends Component{
       );
     }else{
       return (
-        <View>
-          <FlatList
-                data={this.state.listData}
-                renderItem={({item}) => (
-                    <View>
-                      <Text>{item.user_givenname} {item.user_familyname}</Text>
-                    </View>
-                )}
-                keyExtractor={(item,index) => item.user_id.toString()}
-              />
-        </View>
+        <ScrollView>
+          <Text>{this.state.firstName}</Text>
+          <Text>{this.state.lastName}</Text>
+        </ScrollView>
       );
     }
     
