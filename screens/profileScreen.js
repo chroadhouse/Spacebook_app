@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, ScrollView, TouchableNativeFeedbackComponent} from 'react-native';
+import {View, Text, FlatList, ScrollView,Button} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class ProfileScreen extends Component{
@@ -86,6 +86,10 @@ class ProfileScreen extends Component{
         <View>
           <ScrollView>
             <Text>{this.state.firstName} {this.state.lastName}</Text>
+            <Button
+              title='Update Profile'
+              onPress={() => this.props.navigation.navigate("UpdateUserScreen")}
+            />
           </ScrollView>
         </View>
       );

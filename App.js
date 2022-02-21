@@ -8,6 +8,7 @@ import ProfileScreen from './screens/ProfileScreen.js';
 import SignupScreen from './screens/SignupScreen.js';
 import SearchScreen from './screens/SearchScreen.js';
 import LogoutScreen from './screens/LogoutScreen.js';
+import UpdateUserScreen from './screens/UpdateUserScreen.js';
 
 
 const Tab = createBottomTabNavigator();
@@ -33,6 +34,7 @@ class App extends Component {
                     <Stack.Screen name="Login" component={LoginScreen}/>
                     <Stack.Screen name="Signup" component={SignupScreen}/>
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
+                    <Stack.Screen name="UpdateUserScreen" component={UpdateUserScreen}/>
                 </Stack.Navigator>
             </NavigationContainer>          
         );

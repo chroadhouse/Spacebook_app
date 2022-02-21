@@ -27,11 +27,14 @@ class SearchScreen extends Component {
     getData = async () => {
         //Initial search should be with user input 
         // And then when filters are added look at 
-        if(userInput === ""){ console.log("No data") }
-
-        if(userInput =! ""){
+        //So i need some sort of if statment to see what needs to be added
+        //3 things i need to think about 
+            //Search in - all or friends
+            //limit - limit the number of returns
+            //offset - number of items to skip before new start - only really need to fliter one thing
+        if(this.state.userInput !== ""){
             const value = await AsyncStorage.getItem('@session_token');
-            return fetch("http://localhost:3333/api/1.0.0/search",{
+            return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.state.userInput,{
                 'headers': {
                      'X-Authorization': value
                 }
