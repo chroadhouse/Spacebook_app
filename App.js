@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+
 import LoginScreen from './screens/LoginScreen.js';
 import ProfileScreen from './screens/ProfileScreen.js';
 import SignupScreen from './screens/SignupScreen.js';
@@ -11,8 +12,11 @@ import LogoutScreen from './screens/LogoutScreen.js';
 import UpdateUserScreen from './screens/UpdateUserScreen.js';
 
 
+
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
 
 function Tabs() {
     return(
@@ -23,6 +27,7 @@ function Tabs() {
         </Tab.Navigator>
     );
 }
+
 
 class App extends Component {
     render(){
@@ -35,10 +40,13 @@ class App extends Component {
                     <Stack.Screen name="Signup" component={SignupScreen}/>
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
                     <Stack.Screen name="UpdateUserScreen" component={UpdateUserScreen}/>
+
                 </Stack.Navigator>
             </NavigationContainer>          
         );
     }
 }
+
+
 
 export default App
