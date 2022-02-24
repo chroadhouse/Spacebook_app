@@ -10,6 +10,8 @@ import SignupScreen from './screens/SignupScreen.js';
 import SearchScreen from './screens/SearchScreen.js';
 import LogoutScreen from './screens/LogoutScreen.js';
 import UpdateUserScreen from './screens/UpdateUserScreen.js';
+import FriendsScreen from './screens/FriendsScreen.js';
+import AllFriendsScreen from './screens/AllFriendsScreen.js';
 
 
 
@@ -23,6 +25,7 @@ function Tabs() {
         <Tab.Navigator>
             <Tab.Screen name="Profile" component={ProfileScreen}/>
             <Tab.Screen name="Search" component={SearchScreen}/>
+            <Tab.Screen name="Friends" component={AllFriendsScreen}/>
             <Tab.Screen name="Logout" component={LogoutScreen}/>
         </Tab.Navigator>
     );
@@ -40,6 +43,7 @@ class App extends Component {
                     <Stack.Screen name="Signup" component={SignupScreen}/>
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
                     <Stack.Screen name="UpdateUserScreen" component={UpdateUserScreen}/>
+                    <Stack.Screen name="FriendsScreen" component={FriendsScreen}/>
 
                 </Stack.Navigator>
             </NavigationContainer>          

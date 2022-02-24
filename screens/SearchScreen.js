@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, Text, Button, TextInput, FlatList, View } from 'react-native-web';
+import { ScrollView, Text, Button, TextInput, FlatList, View, Switch, TouchableOpacity } from 'react-native-web';
 
 class SearchScreen extends Component {
     constructor(props){
@@ -8,7 +8,9 @@ class SearchScreen extends Component {
 
         this.state = {
             userInput: "",
-            listData: []
+            friendSearch: false,
+            listData: [],
+            selectedUserID: 0,
         }
     }
     //Having issues with the userInput but I can't properly think why
@@ -18,23 +20,28 @@ class SearchScreen extends Component {
           this.checkLoggedIn();
         });
 
-      }
+    }
     
-      componentWillUnmount(){
+    componentWillUnmount(){
         this.unsubscribe();
-      }
+    }
     
     getData = async () => {
-        //Initial search should be with user input 
-        // And then when filters are added look at 
-        //So i need some sort of if statment to see what needs to be added
-        //3 things i need to think about 
-            //Search in - all or friends
-            //limit - limit the number of returns
+            //limit - lmit the number of returns
             //offset - number of items to skip before new start - only really need to fliter one thing
+        //Toggle is not currently working
+        let searchMethod = 'all'
+        if(this.state.friendSearch){
+            console.log('TRUE')
+            searchMethod = 'friends'
+            
+        }else{
+            console.log('FALSE')
+        }
+
         if(this.state.userInput !== ""){
             const value = await AsyncStorage.getItem('@session_token');
-            return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.state.userInput,{
+            return fetch(`http://localhost:3333/api/1.0.0/search?q=${this.state.userInput}&search_in=${searchMethod}`,{
                 'headers': {
                      'X-Authorization': value
                 }
@@ -68,6 +75,7 @@ class SearchScreen extends Component {
         }
     };
 
+
     render() {
         return(
             <View>
@@ -77,6 +85,14 @@ class SearchScreen extends Component {
                         onChangeText={(userInput) => this.setState({userInput})}
                         value={this.state.userInput}
                     />
+                    <Text>Friends</Text>
+                    <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={this.state.friendSearch ? "#f5dd4b" : "#f4f3f4"}
+                        value={this.state.friendSearch}
+                        onValueChange = {(friendSearch) => this.setState({friendSearch: !friendSearch})}
+                        
+                    />
                     <Button
                         title="Seach:"
                         onPress = {() => this.getData()}
@@ -85,7 +101,12 @@ class SearchScreen extends Component {
                         data={this.state.listData}
                         renderItem={({item}) => (
                             <View>
+                            
+                            <TouchableOpacity
+                                onPress={() => this.props.navigation.navigate('FriendsScreen',{item: item })}
+                            >
                             <Text>{item.user_givenname} {item.user_familyname}</Text>
+                            </TouchableOpacity>
                             </View>
                         )}
                     />
