@@ -1,28 +1,26 @@
-import React, {Component} from 'react'
-import {Text, Button, TouchableOpacity} from 'react-native'
-import { ScrollView, View, FlatList } from 'react-native-web';
+import React, {Component} from "react";
+import {Text, ScrollView, Button, View, FlatList} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class AllFriendsScreen extends Component{
+class FriendRequestScreen extends Component{
     constructor(props){
         super(props);
 
         this.state = {
-            
+            requestList: []
         }
     }
-    
+
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
         });
-      
         this.getData();
-      }
-    
-      componentWillUnmount(){
+    }
+
+    componentWillUnmount(){
         this.unsubscribe();
-      }
+    }
 
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
@@ -30,62 +28,68 @@ class AllFriendsScreen extends Component{
             this.props.navigation.navigate('Login');
         }
     };
-    
-    getData = async () => {
-        //This is just a generic statment I think 
+
+    getData = async () =>{
         const token = await AsyncStorage.getItem('@session_token');
-        const id = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + id+"/friends",{
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests",{
             'method': 'get',
             'headers': {
-              'X-Authorization': token,
-              'Content-Type': 'application/json'
-    
-        },
+                'X-Authorization': token,
+                'Content-Type': 'application/json'
+            },
         })
         .then((response) => {
             if(response.status ===200){
-            return response.json()
+                console.log("Request is good")
+                return response.json()
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
             }else{
                 throw 'Something went wrong';
             }
         })
-
+        .then((responseJson) => {
+            this.setState({
+                requestList: responseJson
+            })
+        })
         .catch((error) => {
             console.log("Something is going wrog")
             console.log(error);
         })
     }
 
+    acceptFriendRequest = async () =>{
+        //Here the friend request is accepteds
+    }
+
+    delectFriendRequest = async () =>{
+        //Here the friend request is deleted
+    }
+
     render(){
         return(
             <View>
                 <ScrollView>
-                <Button
-                    title='Friend Requests'
-                    onPress={() => this.props.navigation.navigate('FriendRequestScreen')}
-                />
-                <FlatList
-                        data={this.state.listData}
+                    <Text>This is a test for the screen</Text>
+                    <FlatList
+                        data={this.state.requestList}
                         renderItem={({item}) => (
                             <View>
-                            
-                            <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('UserScreen',{item: item })}
-                            >
-                            <Text>{item.user_givenname} {item.last_name}</Text>
-                            </TouchableOpacity>
+                                <Text>{item.} {item.user_familyname}</Text>
+                                <Button
+                                    title="Accept"
+                                />
+                                <Button
+                                    title="Decline"
+                                />
                             </View>
                         )}
                     />
                 </ScrollView>
             </View>
-
         );
     }
-
 }
 
-export default AllFriendsScreen
+export default FriendRequestScreen;

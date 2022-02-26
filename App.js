@@ -10,8 +10,9 @@ import SignupScreen from './screens/SignupScreen.js';
 import SearchScreen from './screens/SearchScreen.js';
 import LogoutScreen from './screens/LogoutScreen.js';
 import UpdateUserScreen from './screens/UpdateUserScreen.js';
-import FriendsScreen from './screens/FriendsScreen.js';
+import FriendsScreen from './screens/UserScreen.js';
 import AllFriendsScreen from './screens/AllFriendsScreen.js';
+import FriendRequestScreen from './screens/FriendRequestScreen.js';
 
 
 
@@ -19,6 +20,7 @@ import AllFriendsScreen from './screens/AllFriendsScreen.js';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+// Friends request tabs need to be able to see the difference between the two 
 
 function Tabs() {
     return(
@@ -43,7 +45,8 @@ class App extends Component {
                     <Stack.Screen name="Signup" component={SignupScreen}/>
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
                     <Stack.Screen name="UpdateUserScreen" component={UpdateUserScreen}/>
-                    <Stack.Screen name="FriendsScreen" component={FriendsScreen}/>
+                    <Stack.Screen name="UserScreen" component={FriendsScreen}/>
+                    <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen}/>
 
                 </Stack.Navigator>
             </NavigationContainer>          

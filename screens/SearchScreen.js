@@ -89,7 +89,7 @@ class SearchScreen extends Component {
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={this.state.friendSearch ? "#f5dd4b" : "#f4f3f4"}
-                        value={this.state.friendSearch}
+                        //value={this.state.friendSearch}
                         onValueChange = {(friendSearch) => this.setState({friendSearch: !friendSearch})}
                         
                     />
@@ -103,7 +103,7 @@ class SearchScreen extends Component {
                             <View>
                             
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('FriendsScreen',{item: item })}
+                                onPress={() => this.props.navigation.navigate('UserScreen',{item: item })}
                             >
                             <Text>{item.user_givenname} {item.user_familyname}</Text>
                             </TouchableOpacity>

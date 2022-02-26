@@ -15,7 +15,8 @@ class SignupScreen extends Component {
   }
 
   signup = () => {
-    
+    //Need to check emaail at sign 
+    //Need to check that all boxes are valid
     if(this.state.password == this.state.secondPassord){
       return fetch("http://localhost:3333/api/1.0.0/user", {
           method: 'post',
@@ -35,7 +36,7 @@ class SignupScreen extends Component {
       })
       .then((responseJson) => {
           console.log("User created with ID: ",responseJson);
-          this.props.navigation.naigate("Login")
+          this.props.navigation.navigate("Login")
       })
       .catch((error) => {
           console.log(error)
