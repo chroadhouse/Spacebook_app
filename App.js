@@ -13,7 +13,7 @@ import UpdateUserScreen from './screens/UpdateUserScreen.js';
 import FriendsScreen from './screens/UserScreen.js';
 import AllFriendsScreen from './screens/AllFriendsScreen.js';
 import FriendRequestScreen from './screens/FriendRequestScreen.js';
-
+import CameraScreen from './screens/CameraScreen.js';
 
 
 
@@ -47,7 +47,7 @@ class App extends Component {
                     <Stack.Screen name="UpdateUserScreen" component={UpdateUserScreen}/>
                     <Stack.Screen name="UserScreen" component={FriendsScreen}/>
                     <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen}/>
-
+                    <Stack.Screen name="CameraScreen" component={CameraScreen}/>
                 </Stack.Navigator>
             </NavigationContainer>          
         );

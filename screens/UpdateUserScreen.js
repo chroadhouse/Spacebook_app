@@ -150,6 +150,10 @@ class UpdateUserScreen extends Component{
                 <TextInput
                     placeholder="Password here"
                 />
+                <Button
+                  title="Update Profile Photo"
+                  onPress={() => this.props.navigation.navigate('CameraScreen')}
+                />
                 <Text>Verify Password</Text>
                 <Button
                     title="Save Data"
