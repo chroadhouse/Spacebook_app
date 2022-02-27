@@ -15,34 +15,40 @@ class SignupScreen extends Component {
   }
 
   signup = () => {
-    //Need to check emaail at sign 
-    //Need to check that all boxes are valid
-    if(this.state.password == this.state.secondPassord){
-      return fetch("http://localhost:3333/api/1.0.0/user", {
-          method: 'post',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.state)
-      })
-      .then((response) => {
-          if(response.status === 201){
-              return response.json
-          }else if(response.status === 400){
-              throw 'Failed Validation';
-          }else{
-              throw 'Something went wrong';
-          }
-      })
-      .then((responseJson) => {
-          console.log("User created with ID: ",responseJson);
-          this.props.navigation.navigate("Login")
-      })
-      .catch((error) => {
-          console.log(error)
-      })
+    if(this.state.email != "" && this.state.password != "" && this.state.first_name != "" && this.state.last_name != "" && this.state.secondPassord !=""){
+      if(this.state.email.includes("@")){
+        if(this.state.password == this.state.secondPassord){
+          return fetch("http://localhost:3333/api/1.0.0/user", {
+              method: 'post',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(this.state)
+          })
+          .then((response) => {
+              if(response.status === 201){
+                  return response.json
+              }else if(response.status === 400){
+                  throw 'Failed Validation';
+              }else{
+                  throw 'Something went wrong';
+              }
+          })
+          .then((responseJson) => {
+              console.log("User created with ID: ",responseJson);
+              this.props.navigation.navigate("Login")
+          })
+          .catch((error) => {
+              console.log(error)
+          })
+        }else{
+          console.log("Not the same password Dummy")
+        }
+      }else{
+        console.log("Email should include @ symbol")
+      }
     }else{
-      console.log("Not the same password Dummy")
+      console.log("You have not added data to a textbox")
     }
   }
 

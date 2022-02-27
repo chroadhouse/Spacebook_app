@@ -8,7 +8,7 @@ class AllFriendsScreen extends Component{
         super(props);
 
         this.state = {
-            
+            listData: []
         }
     }
     
@@ -52,7 +52,11 @@ class AllFriendsScreen extends Component{
                 throw 'Something went wrong';
             }
         })
-
+        .then((responseJson) => {
+            this.setState({
+                listData: responseJson
+            })
+        })
         .catch((error) => {
             console.log("Something is going wrog")
             console.log(error);
@@ -71,11 +75,12 @@ class AllFriendsScreen extends Component{
                         data={this.state.listData}
                         renderItem={({item}) => (
                             <View>
-                            
+                            <Text>Testing</Text>
+                            <Text>{item.user_id}</Text>
                             <TouchableOpacity
                                 onPress={() => this.props.navigation.navigate('UserScreen',{item: item })}
                             >
-                            <Text>{item.user_givenname} {item.last_name}</Text>
+                            <Text>{item.user_givenname} {item.user_familyname}</Text>
                             </TouchableOpacity>
                             </View>
                         )}

@@ -59,12 +59,57 @@ class FriendRequestScreen extends Component{
         })
     }
 
-    acceptFriendRequest = async () =>{
+    acceptFriendRequest =  async (requestID) =>{
+        //Once the request is accepted need to recall the get data 
         //Here the friend request is accepteds
+        console.log("Method is working")
+        console.log(requestID)
+        
+        const token = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ requestID, {
+            'method': 'post',
+            'headers':{
+                'X-Authorization': token
+            },
+        })
+        .then((response) => {
+            if(response.status ===200){
+                console.log("Response is good")
+                this.getData()
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login");
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        
     }
 
-    delectFriendRequest = async () =>{
+    deleteFriendRequest =  async (requestID) =>{
         //Here the friend request is deleted
+        const token = await AsyncStorage.getItem('@session_token');
+        return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ requestID, {
+            'method': 'Delete',
+            'headers':{
+                'X-Authorization': token
+            },
+        })
+        .then((response) => {
+            if(response.status ===200){
+                console.log("Response is good")
+                this.getData()
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login");
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     render(){
@@ -76,12 +121,14 @@ class FriendRequestScreen extends Component{
                         data={this.state.requestList}
                         renderItem={({item}) => (
                             <View>
-                                <Text>{item.} {item.user_familyname}</Text>
+                                <Text>{item.user_id} {item.first_name} {item.last_name}</Text>
                                 <Button
                                     title="Accept"
+                                    onPress={() => this.acceptFriendRequest(item.user_id)}
                                 />
                                 <Button
                                     title="Decline"
+                                    onPress={() => this.deleteFriendRequest(item.user_id)}
                                 />
                             </View>
                         )}
