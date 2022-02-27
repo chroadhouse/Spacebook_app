@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Text, Button} from 'react-native';
+import {Text, Button, Image, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View } from "react-native-web";
 
@@ -8,8 +8,7 @@ class FriendsScreen extends Component{
         super(props);
 
         this.state = {
-            first_name: "",
-            last_name: "",
+            photo: null,
             userInfo: this.props.route.params.item
         }
     }
@@ -21,7 +20,7 @@ class FriendsScreen extends Component{
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
         });
-
+        this.get_photo()
     }
     
     componentWillUnmount(){
@@ -35,7 +34,32 @@ class FriendsScreen extends Component{
         }
     };
 
-    //Need to do the Async for this section
+    get_photo = async () =>{
+        const token = await AsyncStorage.getItem("@session_token");
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/photo", {
+            'method': 'get',
+            'headers': {
+                'X-Authorization': token
+            },
+        })
+        .then((response) => {
+            if(response.status === 200){
+                console.log("Looking good")
+                return response.blob()
+            }
+        })
+        .then((responseBlob) =>{
+            console.log("Second section")
+            let data = URL.createObjectURL(responseBlob);
+            this.setState({
+                photo: data,
+            })
+        })
+        .catch((error) =>{ 
+            console.log(error)
+        })
+    }
+    
 
     addFriend = async () =>{
         //Send a friend request for this 
@@ -71,6 +95,16 @@ class FriendsScreen extends Component{
     render(){
         return(
             <View>
+                <Image
+                    source={{
+                        uri: this.state.photo,
+                    }}
+                    style = {{
+                        width: 400,
+                        height: 400,
+                        borderWidth: 5
+                    }}
+                />
                 <Text>{this.state.userInfo.user_givenname}</Text>
                 <Button
                     title="Add Friend"
