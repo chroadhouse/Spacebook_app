@@ -64,9 +64,6 @@ class UpdateUserScreen extends Component{
   }
 
   updateUser = async() =>{
-        //Update user needs the ID of the user
-        //Then we just update all the data in there
-        //
 
     let to_send = {};
         

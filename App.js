@@ -14,6 +14,7 @@ import FriendsScreen from './screens/UserScreen.js';
 import AllFriendsScreen from './screens/AllFriendsScreen.js';
 import FriendRequestScreen from './screens/FriendRequestScreen.js';
 import CameraScreen from './screens/CameraScreen.js';
+import SinglePostScreen from './screens/SinglePostScreen.js';
 
 
 
@@ -48,6 +49,7 @@ class App extends Component {
                     <Stack.Screen name="UserScreen" component={FriendsScreen}/>
                     <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen}/>
                     <Stack.Screen name="CameraScreen" component={CameraScreen}/>
+                    <Stack.Screen name="SinglePostScreen" component={SinglePostScreen}/>
                 </Stack.Navigator>
             </NavigationContainer>          
         );

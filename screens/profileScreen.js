@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, ScrollView,Button, Image, StyleSheet} from 'react-native';
+import {View, Text, FlatList, ScrollView,Button, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-web';
 
@@ -13,18 +13,18 @@ class ProfileScreen extends Component{
       lastName: "",
       photo: null,
       postList: [],
-      postInput: ""
+      postInput: "",
+      likeTitle: "Like"
     }
   }
 
   componentDidMount() {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
+      this.getData();
+      this.get_photo()
+      this.get_posts()
     });
-  
-    this.getData();
-    this.get_photo()
-    this.get_posts()
   }
 
   componentWillUnmount(){
@@ -60,10 +60,10 @@ class ProfileScreen extends Component{
           })
       })
       .catch((error) => {
-          console.log("Something is going wrog")
           console.log(error);
       })
   }
+  //Functionalilty for updating a post - View a single post and then from there you can edit the post or delete the post ? 
 
   add_post = async () => {
     const token = await AsyncStorage.getItem('@session_token');
@@ -83,8 +83,7 @@ class ProfileScreen extends Component{
       })
       .then((response) => {
         if(response.status ===200){
-          console.log("Data added")
-          this.get_posts()
+          //this.get_posts()
         }else{
           console.log(response.status)
         }
@@ -111,8 +110,11 @@ class ProfileScreen extends Component{
     })
     .then((response) => {
       if(response.status ===200){
-        console.log("Looking good")
+        console.log("Looking good response 200")
         return response.json()
+      }else{
+        console.log(response.status)
+        console.log("!200")
       }
     })
     .then((responseJson) => {
@@ -128,7 +130,7 @@ class ProfileScreen extends Component{
   get_photo = async () =>{
     const token = await AsyncStorage.getItem("@session_token");
     const id = await AsyncStorage.getItem("user_id");
-    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo", {
+    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo?", {
       'method': 'get',
       'headers': {
         'X-Authorization': token
@@ -136,12 +138,11 @@ class ProfileScreen extends Component{
     })
     .then((response) => {
       if(response.status === 200){
-        console.log("Looking good")
         return response.blob()
       }
     })
     .then((responseBlob) =>{
-      console.log("Second section")
+
       let data = URL.createObjectURL(responseBlob);
       this.setState({
         photo: data,
@@ -158,6 +159,41 @@ class ProfileScreen extends Component{
         this.props.navigation.navigate('Login');
     }
   };
+
+  likePost = async (postItem) =>{
+    let likeRequest
+    console.log(this.state.likeTitle)
+    if(this.state.likeTitle =="Like"){
+      likeRequest = "POST"
+      this.setState({
+        likeTitle: "Unlike"
+      })
+    }else{
+      likeRequest = "DELETE"
+      this.setState({
+        likeTitle: "Like"
+      })
+    }
+    
+
+    const token = await AsyncStorage.getItem('@session_token')
+    const id = await AsyncStorage.getItem('user_id')
+    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/post/"+postItem.post_id+"/like", {
+      'method': likeRequest,
+      'headers': {
+        'X-Authorization': token
+      }
+    })
+    .then((response) =>{
+      if(response.status === 200){
+        console.log("response is 2000 - good")
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    
+  }
 
   render() {
 
@@ -203,13 +239,23 @@ class ProfileScreen extends Component{
               //Then have a method for adding post - All posts stored in list for flat list
               onPress={() => this.add_post()}
             />
-            <FlatList>
-              
+            <FlatList
               data={this.state.postList}
               renderItem={({item}) => (
-                <Text>TESTING</Text>
+                <View>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item })}
+                  >
+                    <Text>{item.text}</Text>
+                    <Text>{item.numlikes}</Text>
+                  </TouchableOpacity>
+                  <Button
+                    title={this.state.likeTitle}
+                    onPress={() => this.likePost(item)}
+                  />
+                </View>
               )}
-            </FlatList>
+            />
           </ScrollView>
         </View>
       );

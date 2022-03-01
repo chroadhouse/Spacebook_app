@@ -89,8 +89,8 @@ class SearchScreen extends Component {
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={this.state.friendSearch ? "#f5dd4b" : "#f4f3f4"}
-                        //value={this.state.friendSearch}
-                        onValueChange = {(friendSearch) => this.setState({friendSearch: !friendSearch})}
+                        value={this.state.friendSearch}
+                        onValueChange = {(value) => this.setState({friendSearch: value})}
                         
                     />
                     <Button
