@@ -11,7 +11,8 @@ class FriendsScreen extends Component{
             userInfo: this.props.route.params.item,
             postList: [],
             likeTitle: "Like",
-            postInput: ""
+            postInput: "",
+            friends: false
         }
     }
     // Conditional rendering 
@@ -23,6 +24,7 @@ class FriendsScreen extends Component{
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
           this.get_photo();
+          this.get_posts();
         });
         
     }
@@ -40,12 +42,13 @@ class FriendsScreen extends Component{
         })
         .then((response) => {
           if(response.status ===200){
-            console.log("Looking good response 200")
             return response.json()
-          }else{
-            console.log(response.status)
-            console.log("!200")
+          }else if(response.status ===403){
+              this.setState({
+                  friends: false
+              })
           }
+            
         })
         .then((responseJson) => {
           this.setState({
@@ -76,8 +79,8 @@ class FriendsScreen extends Component{
                 body: JSON.stringify(to_send)
             })
             .then((response) => {
-                if(response.status === 200){
-                    // get the posts
+                if(response.status === 201){
+                    this.get_posts();
                 }else{
                     console.log(response.status)
                 }
@@ -169,9 +172,9 @@ class FriendsScreen extends Component{
             })
         }
 
-        const token = await AsyncStorage.getItem('@sessions_token')
+        const token = await AsyncStorage.getItem('@session_token')
         const id = await AsyncStorage.getItem('user_id')
-        return fetch("http://localhost:3333/api/1.0.0/user"+id+"/post/"+postItem.post_id+"/like", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/post/"+postItem.post_id+"/like", {
             'method': likeRequest,
             'headers': {
                 'X-Authorization': token
@@ -223,7 +226,7 @@ class FriendsScreen extends Component{
                             onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item})}
                            >
                            <Text>{item.text}</Text>
-                           <Text>{item.numlikes}</Text> 
+                           <Text>{item.numLikes} Likes</Text> 
                             </TouchableOpacity> 
                             <Button
                                 title={this.state.likeTitle}

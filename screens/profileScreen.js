@@ -85,6 +85,7 @@ class ProfileScreen extends Component{
         if(response.status ===200){
           //this.get_posts()
         }else{
+          
           console.log(response.status)
         }
       })
@@ -130,7 +131,7 @@ class ProfileScreen extends Component{
   get_photo = async () =>{
     const token = await AsyncStorage.getItem("@session_token");
     const id = await AsyncStorage.getItem("user_id");
-    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo?", {
+    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/photo?" + Date.now(), {
       'method': 'get',
       'headers': {
         'X-Authorization': token
@@ -160,6 +161,7 @@ class ProfileScreen extends Component{
     }
   };
 
+  
   likePost = async (postItem) =>{
     let likeRequest
     console.log(this.state.likeTitle)
@@ -193,7 +195,7 @@ class ProfileScreen extends Component{
       console.log(error)
     })
     
-  }
+  } 
 
   render() {
 
@@ -247,12 +249,14 @@ class ProfileScreen extends Component{
                     onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item })}
                   >
                     <Text>{item.text}</Text>
-                    <Text>{item.numlikes}</Text>
+                    <Text>{item.numLikes} Likes</Text>
                   </TouchableOpacity>
                   <Button
                     title={this.state.likeTitle}
                     onPress={() => this.likePost(item)}
                   />
+                  
+                  
                 </View>
               )}
             />
