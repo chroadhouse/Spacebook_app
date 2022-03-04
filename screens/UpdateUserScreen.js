@@ -18,12 +18,14 @@ class UpdateUserScreen extends Component{
     }
   }
 
+  
+
   componentDidMount() {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
+      this.getData();
     });
       
-    this.getData();
   }
     
   componentWillUnmount(){
@@ -124,20 +126,18 @@ class UpdateUserScreen extends Component{
       <View>
         <Text>First Name</Text>
         <TextInput
-            placeholder={this.state.first_name_og} 
-            //defaultValue={this.state.first_name_og}
-            onChangeText={(first_name) => this.setState({first_name})}
-            value={this.state.first_name}
+            onChangeText={(value) => this.setState({first_name: value})}
+            defaultValue={this.state.first_name_og}
         />
         <Text>Last Name</Text>
         <TextInput
-            placeholder={this.state.last_name_og}
-            //defaultValue={this.state.last_name_og}
+            defaultValue={this.state.last_name_og}
+            onChangeText={(value) => this.setState({last_name: value})}
         />
         <Text>Email</Text>
         <TextInput
-            placeholder={this.state.email_og}
-            //defaultValue={this.state.email_og}
+            onChangeText={(value) => this.setState({email: value})}
+            defaultValue={this.state.email_og}
         />
 
         <Text>Update a new Password</Text>

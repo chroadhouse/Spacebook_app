@@ -15,10 +15,7 @@ class FriendsScreen extends Component{
             friends: false
         }
     }
-    // Conditional rendering 
-    //Have a button to add friend and send a friend request button
-    //User screen - need to be able to add a post to a wall - see likes and unlikes, 
-    //View a single post - update the post if it is yours 
+    
 
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -42,6 +39,9 @@ class FriendsScreen extends Component{
         })
         .then((response) => {
           if(response.status ===200){
+              this.setState({
+                  friends: true
+              })
             return response.json()
           }else if(response.status ===403){
               this.setState({
@@ -183,6 +183,7 @@ class FriendsScreen extends Component{
         .then((response) =>{
             if(response.status === 200){
                 console.log("response is 2000 - good")
+                this.get_posts()
             }
         })
         .catch((error) => {
@@ -191,52 +192,71 @@ class FriendsScreen extends Component{
     }
 
     render(){
-        return(
-            <View>
-                <Image
-                    source={{
-                        uri: this.state.photo,
-                    }}
-                    style = {{
-                        width: 400,
-                        height: 400,
-                        borderWidth: 5
-                    }}
-                />
-                <Text>{this.state.userInfo.user_givenname}</Text>
-                <Button
-                    title="Add Friend"
-                    onPress = {() => this.addFriend()}
-                />
-                <Text>Add Post</Text>
-                <TextInput
-                    placeholder="What do you want to write about"
-                    onChangeText={(postInput) => this.setState({postInput})}
-                    value={this.state.postInput}
-                />
-                <Button
-                    title="Add Post"
-                    onPress={() => this.add_post()}
-                />
-                <FlatList
-                    data={this.state.postList}
-                    renderItem={({item}) => (
-                        <View>
-                           <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item})}
-                           >
-                           <Text>{item.text}</Text>
-                           <Text>{item.numLikes} Likes</Text> 
-                            </TouchableOpacity> 
-                            <Button
-                                title={this.state.likeTitle}
-                                onPress={() => this.likePost(item)}
-                            />
-                        </View>
-                    )}
-                />
-            </View>
-        );
+        if(!this.state.friends){
+            //Do something 
+            return(
+                <View>
+                    <Image
+                        source={{
+                            uri: this.state.photo,
+                        }}
+                        style = {{
+                            width: 400,
+                            height: 400,
+                            borderWidth: 5
+                        }}
+                    />
+                    <Text>{this.state.userInfo.user_givenname}</Text>
+                    <Button
+                        title="Add Friend"
+                        onPress = {() => this.addFriend()}
+                    />
+                </View>
+            )
+        }else{
+            return(
+                <View>
+                    <Image
+                        source={{
+                            uri: this.state.photo,
+                        }}
+                        style = {{
+                            width: 400,
+                            height: 400,
+                            borderWidth: 5
+                        }}
+                    />
+                    <Text>{this.state.userInfo.user_givenname}</Text>
+                    <Text>Add Post</Text>
+                    <TextInput
+                        placeholder="What do you want to write about"
+                        onChangeText={(postInput) => this.setState({postInput})}
+                        value={this.state.postInput}
+                    />
+                    <Button
+                        title="Add Post"
+                        onPress={() => this.add_post()}
+                    />
+                    <FlatList
+                        data={this.state.postList}
+                        renderItem={({item}) => (
+                            <View>
+                            <TouchableOpacity
+                                onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item, userInfo: this.state.userInfo})}
+                            >
+                            <Text>{item.text}</Text>
+                            <Text>{item.numLikes} Likes</Text> 
+                                </TouchableOpacity> 
+                                <Button
+                                    title={this.state.likeTitle}
+                                    onPress={() => this.likePost(item)}
+                                />
+                            </View>
+                        )}
+                    />
+                </View>
+            );
+        }
     }
 
 }

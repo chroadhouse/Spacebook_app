@@ -15,14 +15,15 @@ class AllFriendsScreen extends Component{
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
+          this.getData();
         });
       
-        this.getData();
-      }
+        
+    }
     
-      componentWillUnmount(){
+    componentWillUnmount(){
         this.unsubscribe();
-      }
+    }
 
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
@@ -41,7 +42,7 @@ class AllFriendsScreen extends Component{
               'X-Authorization': token,
               'Content-Type': 'application/json'
     
-        },
+            },
         })
         .then((response) => {
             if(response.status ===200){

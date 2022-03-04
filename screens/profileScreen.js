@@ -14,7 +14,8 @@ class ProfileScreen extends Component{
       photo: null,
       postList: [],
       postInput: "",
-      likeTitle: "Like"
+      likeTitle: "Like",
+      userInfo: []
     }
   }
 
@@ -54,6 +55,7 @@ class ProfileScreen extends Component{
       })
       .then((responseJson) => {
           this.setState({
+            userInfo: responseJson,
             isLoading: false,
             firstName: responseJson.first_name,
             lastName: responseJson.last_name
@@ -82,8 +84,11 @@ class ProfileScreen extends Component{
         body: JSON.stringify(to_send)
       })
       .then((response) => {
-        if(response.status ===200){
-          //this.get_posts()
+        if(response.status ===201){
+          this.setState({
+            postInput: ""
+          })
+          this.get_posts()
         }else{
           
           console.log(response.status)
@@ -198,7 +203,6 @@ class ProfileScreen extends Component{
   } 
 
   render() {
-
     if (this.state.isLoading){
       return (
         <View
@@ -233,7 +237,7 @@ class ProfileScreen extends Component{
             <Text>Add Post</Text>
             <TextInput
               placeholder="Add posts"
-              onChangeText={(postInput) => this.setState({postInput})}
+              onChangeText={(value) => this.setState({postInput: value})}
               value={this.state.postInput}
             />
             <Button
@@ -246,7 +250,7 @@ class ProfileScreen extends Component{
               renderItem={({item}) => (
                 <View>
                   <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item })}
+                    onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item, userInfo: this.state.userInfo })}
                   >
                     <Text>{item.text}</Text>
                     <Text>{item.numLikes} Likes</Text>
