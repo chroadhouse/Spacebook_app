@@ -18,7 +18,8 @@ class SinglePostScreen extends Component{
             updating: false, 
             likeTitle: "Like", 
             numberOfLikes: 0, 
-            validationText: ""
+            validationText: "",
+            ownProfile: false
         }
     }
 
@@ -119,29 +120,34 @@ class SinglePostScreen extends Component{
     checkLiked = async () =>{
         //Check whether they have being liked or not 
         //not liked - will like 
+        const id = await AsyncStorage.getItem('user_id')
         const token = await AsyncStorage.getItem('@session_token')
-        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID+"/like", {
-            'method': 'POST',
-            'headers':{
-                'X-Authorization': token
-            }
-        })
-        .then((response) => {
-            if(response.status === 200){
-                return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID+"/like", {
-                    'method': 'DELETE',
-                    'headers':{
-                        'X-Authorization': token
-                    }
-                })
-            
-            }else if(response.status === 400 || response.status === 403){
-                this.setState({
-                    likeTitle: "unlike"
-                })
-            }
-            
-        })  
+        if(id != this.state.userID){
+            return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID+"/like", {
+                'method': 'POST',
+                'headers':{
+                    'X-Authorization': token
+                }
+            })
+            .then((response) => {
+                if(response.status === 200){
+                    return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID+"/like", {
+                        'method': 'DELETE',
+                        'headers':{
+                            'X-Authorization': token
+                        }
+                    })
+                
+                }else if(response.status === 400 || response.status === 403){
+                    this.setState({
+                        likeTitle: "unlike"
+                    })
+                }
+                
+            })
+        }else{
+            this.setState({ownProfile: true})
+        }
     }
 
 
@@ -267,27 +273,40 @@ class SinglePostScreen extends Component{
                         />
                         <Button
                             title="Back"
-                            onPress={(value) => this.setState({editPost: false}, () => this.getPostData())}
+                            onPress={(value) => this.setState({editPost: false}, () => this.getPostData())}Yea
                             value={this.state.editPost}
                         />
                     </ScrollView>
                 )
             }
         }else{
-            return(
-                <ScrollView>
-                    <TextInput
-                        multiline
-                        editable={false}
-                        numberOfLines={4}
-                        defaultValue={this.state.postData.text}
-                    />
-                    <Button
-                        title={this.state.likeTitle}
-                        onPress={() => this.likePost()}
-                    />
-                </ScrollView>
-            )
+            if(!this.state.ownProfile){
+                return(
+                    <ScrollView>
+                        <TextInput
+                            multiline
+                            editable={false}
+                            numberOfLines={4}
+                            defaultValue={this.state.postData.text}
+                        />
+                        <Button
+                            title={this.state.likeTitle}
+                            onPress={() => this.likePost()}
+                        />
+                    </ScrollView>
+                )
+            }else{
+                return(
+                    <ScrollView>
+                        <TextInput
+                            multiline
+                            editable={false}
+                            numberOfLines={4}
+                            defaultValue={this.state.postData.text}
+                        />
+                    </ScrollView>
+                )
+            }
         }
     }
 }
