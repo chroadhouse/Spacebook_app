@@ -40,10 +40,11 @@ class FriendRequestScreen extends Component{
         })
         .then((response) => {
             if(response.status ===200){
-                console.log("Request is good")
                 return response.json()
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 500){
+                console.log("Server Error")
             }else{
                 throw 'Something went wrong';
             }
@@ -74,10 +75,11 @@ class FriendRequestScreen extends Component{
         })
         .then((response) => {
             if(response.status ===200){
-                console.log("Response is good")
                 this.getData()
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 404){
+                console.log("Not found")
             }else{
                 throw 'Something went wrong';
             }
@@ -99,10 +101,13 @@ class FriendRequestScreen extends Component{
         })
         .then((response) => {
             if(response.status ===200){
-                console.log("Response is good")
                 this.getData()
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 404){
+                console.log("Not found")
+            }else if(response.status === 500){
+                
             }else{
                 throw 'Something went wrong';
             }

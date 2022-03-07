@@ -49,6 +49,8 @@ class ProfileScreen extends Component{
             return response.json()
           }else if(response.status === 401){
             this.props.navigation.navigate("Login");
+          }else if(response.status === 404){
+            console.log("Not found")
           }else{
             throw 'Something went wrong';
           }
@@ -89,9 +91,12 @@ class ProfileScreen extends Component{
             postInput: ""
           })
           this.get_posts()
+        }else if(response.status === 401) {
+          this.props.navigation.navigate("Login")
+        }else if(response.status === 404){
+          console.log("Not Found")
         }else{
-          
-          console.log(response.status)
+          throw 'Something has gone wrong'
         }
       })
       .catch((error) => {
@@ -118,9 +123,14 @@ class ProfileScreen extends Component{
       if(response.status ===200){
         console.log("Looking good response 200")
         return response.json()
+      }else if(response.status === 401){
+        this.props.navigation.navigate("Login")
+      }else if(response.status === 403){
+        console.log("Can only view posts from your friends or your own posts")
+      }else if(response.status === 404){
+        console.log("Not Found")
       }else{
-        console.log(response.status)
-        console.log("!200")
+        throw "Server error"
       }
     })
     .then((responseJson) => {
@@ -145,10 +155,15 @@ class ProfileScreen extends Component{
     .then((response) => {
       if(response.status === 200){
         return response.blob()
+      }else if(response.status === 401){
+        this.props.navigation.navigate("Login")
+      }else if(response.status === 404){
+        console.log("Not found")
+      }else{
+        throw "Something went wrong with the server"
       }
     })
     .then((responseBlob) =>{
-
       let data = URL.createObjectURL(responseBlob);
       this.setState({
         photo: data,
@@ -167,40 +182,40 @@ class ProfileScreen extends Component{
   };
 
   
-  likePost = async (postItem) =>{
-    let likeRequest
-    console.log(this.state.likeTitle)
-    if(this.state.likeTitle =="Like"){
-      likeRequest = "POST"
-      this.setState({
-        likeTitle: "Unlike"
-      })
-    }else{
-      likeRequest = "DELETE"
-      this.setState({
-        likeTitle: "Like"
-      })
-    }
+  // likePost = async (postItem) =>{
+  //   let likeRequest
+  //   console.log(this.state.likeTitle)
+  //   if(this.state.likeTitle =="Like"){
+  //     likeRequest = "POST"
+  //     this.setState({
+  //       likeTitle: "Unlike"
+  //     })
+  //   }else{
+  //     likeRequest = "DELETE"
+  //     this.setState({
+  //       likeTitle: "Like"
+  //     })
+  //   }
     
 
-    const token = await AsyncStorage.getItem('@session_token')
-    const id = await AsyncStorage.getItem('user_id')
-    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/post/"+postItem.post_id+"/like", {
-      'method': likeRequest,
-      'headers': {
-        'X-Authorization': token
-      }
-    })
-    .then((response) =>{
-      if(response.status === 200){
-        console.log("response is 2000 - good")
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  //   const token = await AsyncStorage.getItem('@session_token')
+  //   const id = await AsyncStorage.getItem('user_id')
+  //   return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/post/"+postItem.post_id+"/like", {
+  //     'method': likeRequest,
+  //     'headers': {
+  //       'X-Authorization': token
+  //     }
+  //   })
+  //   .then((response) =>{
+  //     if(response.status === 200){
+  //       console.log("response is 2000 - good")
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.log(error)
+  //   })
     
-  } 
+  // } 
 
   render() {
     if (this.state.isLoading){
@@ -216,6 +231,7 @@ class ProfileScreen extends Component{
         </View>
       );
     }else{
+
       return (
         <View>
           <ScrollView>
@@ -250,16 +266,15 @@ class ProfileScreen extends Component{
               renderItem={({item}) => (
                 <View>
                   <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item, userInfo: this.state.userInfo })}
+                    onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item.post_id, userInfo: this.state.userInfo.user_id })}
                   >
                     <Text>{item.text}</Text>
                     <Text>{item.numLikes} Likes</Text>
                   </TouchableOpacity>
-                  <Button
+                  {/* <Button
                     title={this.state.likeTitle}
                     onPress={() => this.likePost(item)}
-                  />
-                  
+                  /> */}
                   
                 </View>
               )}

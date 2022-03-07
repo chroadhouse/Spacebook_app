@@ -32,13 +32,8 @@ class SearchScreen extends Component {
         //Toggle is not currently working
         let searchMethod = 'all'
         if(this.state.friendSearch){
-            console.log('TRUE')
             searchMethod = 'friends'
-            
-        }else{
-            console.log('FALSE')
         }
-
         if(this.state.userInput !== ""){
             const value = await AsyncStorage.getItem('@session_token');
             return fetch(`http://localhost:3333/api/1.0.0/search?q=${this.state.userInput}&search_in=${searchMethod}`,{
@@ -49,6 +44,8 @@ class SearchScreen extends Component {
             .then((response) => {
                 if(response.status ===200){
                     return response.json()
+                }else if(response.status === 400){
+                    console.log("Bad Request")
                 }else if(response.status === 401){
                     this.props.navigation.navigate("Login");
                 }else{

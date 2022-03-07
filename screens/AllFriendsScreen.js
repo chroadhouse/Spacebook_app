@@ -46,9 +46,15 @@ class AllFriendsScreen extends Component{
         })
         .then((response) => {
             if(response.status ===200){
-            return response.json()
+                return response.json()
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 403){
+                console.log("You can only view the friends of yourself or your friends");
+            }else if(response.status === 404){
+                console.log("No one is there")
+            }else if(response.status === 500){
+                console.log("Server Error")
             }else{
                 throw 'Something went wrong';
             }

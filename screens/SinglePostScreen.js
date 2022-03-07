@@ -9,21 +9,26 @@ class SinglePostScreen extends Component{
 
         this.state = {
             //Here i want to do what i did for the user screen 
-            userInfo: this.props.route.params.userInfo,
-            postData: this.props.route.params.item,
+            userID: this.props.route.params.userInfo,
+            postID: this.props.route.params.item,
+            postData: [],
             postText: "",
             editPost: false,
             userVerifed: false,
-            updating: false
+            updating: false, 
+            likeTitle: "Like", 
+            numberOfLikes: 0
         }
     }
 
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
-          this.checkUser();
+          this.getPostData();
         });
-        
+        if(!this.state.userVerifed){
+            this.checkLiked();
+        }
 
     }
     
@@ -37,8 +42,6 @@ class SinglePostScreen extends Component{
             this.props.navigation.navigate('Login');
         }
     };
-    //If the logged in user is the same as the author then they should be able to see  the update and delet button
-    //Could possibly hide this in a view
 
     updatePost = async () =>{
         console.log(this.state.postText)
@@ -52,7 +55,7 @@ class SinglePostScreen extends Component{
                 const token = await AsyncStorage.getItem('@session_token');
                 
                 console.log(JSON.stringify(to_send))
-                return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/post/"+this.state.postData.post_id,{
+                return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID,{
                     'method': 'PATCH',
                     'headers': {
                         'X-Authorization':token,
@@ -62,9 +65,17 @@ class SinglePostScreen extends Component{
                 })
                 .then((response) => {
                     if(response.status === 200){
-                        console.log('Good responseß')
+                        console.log('Good response')
+                    }else if(response.status === 400){
+
+                    }else if(response.status === 401){
+                        this.props.navigation.navigate("Login")
+                    }else if(response.status === 403){
+                        console.log("Cannot update other peoples posts")
+                    }else if(response.status === 404){
+                        console.log("Not found")
                     }else{
-                        console.log('Bad response')
+                        throw "Server Error "
                     }
                 })
                 .catch((error) => {
@@ -80,7 +91,7 @@ class SinglePostScreen extends Component{
     deletePost = async () =>{
         //Delete
         const token = await AsyncStorage.getItem('@session_token');
-        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/post/"+this.state.postData.post_id, {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID, {
             'method': 'Delete',
             'headers':{
                 'X-Authorization': token
@@ -92,8 +103,12 @@ class SinglePostScreen extends Component{
                 this.props.navigation.navigate("profileScreen")
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
+            }else if(response.status === 403){
+                console.log("You can only delete your own posts")
+            }else if(response.status === 404){
+                console.log("Not found")
             }else{
-                throw 'Something went wrong';
+                throw "Something not working"
             }
         })
         .catch((error) => {
@@ -101,18 +116,113 @@ class SinglePostScreen extends Component{
         })
     }
 
-    checkUser = async () =>{
-        const id = await AsyncStorage.getItem('user_id')
-        if(id == this.state.postData.author.user_id){
+    checkLiked = async () =>{
+        //Check whether they have being liked or not 
+        //not liked - will like 
+        const token = await AsyncStorage.getItem('@session_token')
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID+"/like", {
+            'method': 'POST',
+            'headers':{
+                'X-Authorization': token
+            }
+        })
+        .then((response) => {
+            if(response.status === 200){
+                return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID+"/like", {
+                    'method': 'DELETE',
+                    'headers':{
+                        'X-Authorization': token
+                    }
+                })
+            
+            }else if(response.status === 400 || response.status === 403){
+                this.setState({
+                    likeTitle: "unlike"
+                })
+            }
+            
+        })  
+    }
+
+
+    likePost = async () =>{
+        let likeRequest
+        if(this.state.likeTitle =="Like"){
+            likeRequest = "POST"
             this.setState({
-                userVerifed: true
+                likeTitle: "Unlike"
             })
         }else{
+            likeRequest ="DELETE"
             this.setState({
-                userVerifed: false
-            })    
+                likeTitle: "Like"
+            })
         }
+
+        const token = await AsyncStorage.getItem('@session_token')
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID+"/like", {
+            'method': likeRequest,
+            'headers': {
+                'X-Authorization': token
+            }
+         })
+        .then((response) =>{
+            if(response.status === 200){
+                console.log("response is 2000 - good")
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login")
+            }else if(response.status === 403){
+                console.log("Forbidden ")
+            }else{
+                throw "Somehting"
+            }
+        })
+        .catch((error) => {
+            console.log(error)
+        })
     }
+
+    getPostData = async () =>{
+        const id = await AsyncStorage.getItem('user_id')
+        const token = await AsyncStorage.getItem('@session_token')
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID, {
+            'method': 'get',
+            'headers':{
+                'X-Authorization': token
+            }
+        })
+        .then((response) => {
+            if(response.status === 200){
+                return response.json()
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login")
+            }else if(response.status === 403){
+                console.log("Can only view the posts of yourself or friends")
+            }else if(response.status === 404){
+                console.log("Not Found")
+            }else{
+                throw "Something not working"
+            }
+        })
+        .then((responseJson) => {
+            if(id == responseJson.author.user_id){
+                this.setState({
+                    postData: responseJson,
+                    userVerifed: true
+                })
+            }else{
+                this.setState({
+                    postData: responseJson,
+                    userVerifed: false
+                })
+            }
+            
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
 
     //Must be able to still like and unlike on this screen - Can be done lateer 
     //Conditional rendering if the author is the same as the user logged in 
@@ -172,7 +282,8 @@ class SinglePostScreen extends Component{
                         defaultValue={this.state.postData.text}
                     />
                     <Button
-                        title="Like"
+                        title={this.state.likeTitle}
+                        onPress={() => this.likePost()}
                     />
                 </ScrollView>
             )

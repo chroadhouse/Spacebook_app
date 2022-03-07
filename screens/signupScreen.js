@@ -14,35 +14,63 @@ class SignupScreen extends Component {
     }
   }
 
+  checkPassword(){
+    let tempPassword = String(this.state.password)
+    if(tempPassword.length > 7){
+      if(/\d/.test(tempPassword)){
+        if(/[A-Z]/.test(tempPassword)){
+          let tempName = String(this.state.last_name)
+          if(!tempPassword.includes(tempName)){
+            return true
+          }else{
+            return false
+          }
+        }else{
+          return false
+        }
+      }else{
+        return false
+      }
+    }else{
+      return false
+    }
+  }
+
   signup = () => {
+    //Need to do some more validation - for the password specifically 
+    
     if(this.state.email != "" && this.state.password != "" && this.state.first_name != "" && this.state.last_name != "" && this.state.secondPassord !=""){
       if(this.state.email.includes("@")){
-        if(this.state.password == this.state.secondPassord){
-          return fetch("http://localhost:3333/api/1.0.0/user", {
-              method: 'post',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(this.state)
-          })
-          .then((response) => {
-              if(response.status === 201){
-                  return response.json
-              }else if(response.status === 400){
-                  throw 'Failed Validation';
-              }else{
-                  throw 'Something went wrong';
-              }
-          })
-          .then((responseJson) => {
-              console.log("User created with ID: ",responseJson);
-              this.props.navigation.navigate("Login")
-          })
-          .catch((error) => {
-              console.log(error)
-          })
-        }else{
-          console.log("Not the same password Dummy")
+        if(this.checkPassword())
+          if(this.state.password == this.state.secondPassord){
+            return fetch("http://localhost:3333/api/1.0.0/user", {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.state)
+            })
+            .then((response) => {
+                if(response.status === 201){
+                    return response.json
+                }else if(response.status === 400){
+                    throw 'Failed Validation';
+                }else{
+                    throw 'Something went wrong';
+                }
+            })
+            .then((responseJson) => {
+                console.log("User created with ID: ",responseJson);
+                this.props.navigation.navigate("Login")
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+          }else{
+            console.log("Not the same password Dummy")
+          }
+        else{
+          console.log("Password is invalid please try again")
         }
       }else{
         console.log("Email should include @ symbol")

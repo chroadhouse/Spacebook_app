@@ -102,12 +102,15 @@ class UpdateUserScreen extends Component{
         this.props.navigation.navigate('profileScreen')
       }else if(response.status === 401){
         this.props.navigation.navigate("Login");
+      }else if(response.status === 403){
+        console.log("Forbidden")
+      }else if(response.status === 404){
+        console.log("Not Found")
       }else{
-        throw 'Something went wrong';
+        throw "Something"
       }
     })
     .catch((error) => {
-      console.log("Something is going wrog")
       console.log(error);
     })
   }

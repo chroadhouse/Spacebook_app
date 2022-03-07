@@ -62,9 +62,20 @@ class CameraScreen extends Component{
         })
         .then((response) => {
             console.log("Picture added", response);
+            if(response.status === 200){
+                console.log("Photo looking good")
+            }else if(response.status === 400){
+                console.log("Bad Request")
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login");
+            }else if(response.status === 404){
+                console.log("Not found")
+            }else{
+                throw 'Something has gone terribly wrong'
+            }
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            console.log(error);
         })
     }
 

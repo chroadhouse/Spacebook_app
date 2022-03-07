@@ -43,10 +43,14 @@ class FriendsScreen extends Component{
                   friends: true
               })
             return response.json()
-          }else if(response.status ===403){
+          }else if(response.status === 401){
+            this.props.navigation.navigate("Login")
+          }else if(response.status === 403){
               this.setState({
                   friends: false
               })
+          }else{
+              throw "Something"
           }
             
         })
@@ -81,8 +85,12 @@ class FriendsScreen extends Component{
             .then((response) => {
                 if(response.status === 201){
                     this.get_posts();
+                }else if(response.status === 401){
+                    this.props.navigation.navigate("Login")
+                }else if(response.status === 404){
+                    console.log("Not Found")
                 }else{
-                    console.log(response.status)
+                    throw "Somthing"
                 }
             })
             .catch((error) => {
@@ -109,8 +117,13 @@ class FriendsScreen extends Component{
         })
         .then((response) => {
             if(response.status === 200){
-                console.log("Looking good")
                 return response.blob()
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login")
+            }else if(response.status === 404){
+                console.log("Not found")
+            }else{
+                throw "Something"
             }
         })
         .then((responseBlob) =>{
@@ -182,8 +195,15 @@ class FriendsScreen extends Component{
          })
         .then((response) =>{
             if(response.status === 200){
-                console.log("response is 2000 - good")
                 this.get_posts()
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login")
+            }else if(response.status === 403){
+                console.log("You have already liked the post")
+            }else if(response.status === 404){
+                console.log("Not Found")
+            }else{
+                throw "Something"
             }
         })
         .catch((error) => {
@@ -242,15 +262,15 @@ class FriendsScreen extends Component{
                         renderItem={({item}) => (
                             <View>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item, userInfo: this.state.userInfo})}
+                                onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item.post_id, userInfo: this.state.userInfo.user_id})}
                             >
                             <Text>{item.text}</Text>
                             <Text>{item.numLikes} Likes</Text> 
                                 </TouchableOpacity> 
-                                <Button
+                                {/* <Button
                                     title={this.state.likeTitle}
                                     onPress={() => this.likePost(item)}
-                                />
+                                /> */}
                             </View>
                         )}
                     />
