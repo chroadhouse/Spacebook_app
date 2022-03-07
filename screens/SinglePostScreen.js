@@ -17,7 +17,8 @@ class SinglePostScreen extends Component{
             userVerifed: false,
             updating: false, 
             likeTitle: "Like", 
-            numberOfLikes: 0
+            numberOfLikes: 0, 
+            validationText: ""
         }
     }
 
@@ -44,9 +45,8 @@ class SinglePostScreen extends Component{
     };
 
     updatePost = async () =>{
-        console.log(this.state.postText)
-        //Check if they are the same 
-        //this.setState({editPost: false})
+        
+        this.setState({validationText: ""})
         if(this.state.postText != ""){
             if(this.state.postText != this.state.postData.text){
                 //Doesn't need updating
@@ -84,7 +84,7 @@ class SinglePostScreen extends Component{
             }
         }
         else{
-            console.log("NO DATA")
+            this.setState({validationText: "You are trying to update the post with no data"})
         }
     }
 
@@ -260,13 +260,14 @@ class SinglePostScreen extends Component{
                             onChangeText={(value) => this.setState({postText: value})}
                             defaultValue={this.state.postData.text}
                         />
+                        <Text>{this.state.validationText}</Text>
                         <Button
                             title="Save"
                             onPress={() => this.updatePost()}
                         />
                         <Button
                             title="Back"
-                            onPress={(value) => this.setState({editPost: false})}
+                            onPress={(value) => this.setState({editPost: false}, () => this.getPostData())}
                             value={this.state.editPost}
                         />
                     </ScrollView>

@@ -15,7 +15,8 @@ class ProfileScreen extends Component{
       postList: [],
       postInput: "",
       likeTitle: "Like",
-      userInfo: []
+      userInfo: [], 
+      validationText: ""
     }
   }
 
@@ -70,6 +71,9 @@ class ProfileScreen extends Component{
   //Functionalilty for updating a post - View a single post and then from there you can edit the post or delete the post ? 
 
   add_post = async () => {
+    this.setState({
+      validationText: ""
+    })
     const token = await AsyncStorage.getItem('@session_token');
     const id = await AsyncStorage.getItem('user_id');
     
@@ -103,7 +107,9 @@ class ProfileScreen extends Component{
         console.log(error)
       })
     }else{
-      console.log("Tried to add post with no data")
+      this.setState({
+        validationText: "Trying at add post with no data"
+      })
     }
   }
 
@@ -256,9 +262,9 @@ class ProfileScreen extends Component{
               onChangeText={(value) => this.setState({postInput: value})}
               value={this.state.postInput}
             />
+            <Text>{this.state.validationText}</Text>
             <Button
               title='Add Post'
-              //Then have a method for adding post - All posts stored in list for flat list
               onPress={() => this.add_post()}
             />
             <FlatList

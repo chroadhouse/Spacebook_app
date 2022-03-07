@@ -11,6 +11,7 @@ class SearchScreen extends Component {
             friendSearch: false,
             listData: [],
             selectedUserID: 0,
+            validationText: ""
         }
     }
     //Having issues with the userInput but I can't properly think why
@@ -29,7 +30,8 @@ class SearchScreen extends Component {
     getData = async () => {
             //limit - lmit the number of returns
             //offset - number of items to skip before new start - only really need to fliter one thing
-        //Toggle is not currently working
+        
+        this.setState({validationText: ""})
         let searchMethod = 'all'
         if(this.state.friendSearch){
             searchMethod = 'friends'
@@ -61,7 +63,9 @@ class SearchScreen extends Component {
                 console.log(error);
             })
         }else{
-            console.log("You have not input any data")
+            this.setState({
+                validationText: "You have not entered Text in the text box"
+            })
         }
     }
     
@@ -78,7 +82,7 @@ class SearchScreen extends Component {
             <View>
                 <ScrollView>
                     <TextInput
-                        placeholder="Enter name to searcg for"
+                        placeholder="Enter name to search for"
                         onChangeText={(userInput) => this.setState({userInput})}
                         value={this.state.userInput}
                     />
@@ -91,9 +95,10 @@ class SearchScreen extends Component {
                         
                     />
                     <Button
-                        title="Seach:"
+                        title="Search:"
                         onPress = {() => this.getData()}
                     />
+                    <Text>{this.state.validationText}</Text>
                     <FlatList
                         data={this.state.listData}
                         renderItem={({item}) => (

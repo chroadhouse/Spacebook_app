@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, TextInput, Button } from 'react-native-web';
+import { Text, ScrollView, TextInput, Button } from 'react-native-web';
 
 class SignupScreen extends Component {
   constructor(props) {
@@ -10,7 +10,8 @@ class SignupScreen extends Component {
       last_name: "",
       email: "",
       password: "",
-      secondPassord: ""
+      secondPassord: "",
+      validationText: ""
     }
   }
 
@@ -19,29 +20,45 @@ class SignupScreen extends Component {
     if(tempPassword.length > 7){
       if(/\d/.test(tempPassword)){
         if(/[A-Z]/.test(tempPassword)){
-          let tempName = String(this.state.last_name)
-          if(!tempPassword.includes(tempName)){
+          let tempLastName = String(this.state.last_name)
+          let tempFirstName = String(this.state.first_name)
+          if(!tempPassword.includes(tempLastName) && !tempPassword.includes(tempFirstName)){
             return true
           }else{
+            this.setState({
+              validationText: "- Password cannot contain your first or last name"
+            })
             return false
           }
         }else{
+          this.setState({
+            validationText: "- Password must include a capital letter"
+          })
           return false
         }
       }else{
+        this.setState({
+          validationText: "- Password must contain an Integer"
+        })
         return false
       }
     }else{
+      this.setState({
+        validationText: "- Password must be longer than 7 characters"
+      })
       return false
     }
   }
 
   signup = () => {
-    //Need to do some more validation - for the password specifically 
+    //Reset the validation text
+    this.setState({
+      validationText: ""
+    })
     
     if(this.state.email != "" && this.state.password != "" && this.state.first_name != "" && this.state.last_name != "" && this.state.secondPassord !=""){
       if(this.state.email.includes("@")){
-        if(this.checkPassword())
+        if(this.checkPassword()){
           if(this.state.password == this.state.secondPassord){
             return fetch("http://localhost:3333/api/1.0.0/user", {
                 method: 'post',
@@ -67,16 +84,20 @@ class SignupScreen extends Component {
                 console.log(error)
             })
           }else{
-            console.log("Not the same password Dummy")
+            this.setState({
+              validationText: "- The passwords do not Match"
+            })
           }
-        else{
-          console.log("Password is invalid please try again")
         }
       }else{
-        console.log("Email should include @ symbol")
+        this.setState({
+          validationText: "- Not a vaild email address, must have @ symbol"
+        })
       }
     }else{
-      console.log("You have not added data to a textbox")
+      this.setState({
+        validationText: "- Data has been missed from some of the TextBoxes"
+      })
     }
   }
 
@@ -112,6 +133,7 @@ class SignupScreen extends Component {
                   title="Create account"
                   onPress={() => this.signup()}
                 />
+                <Text>{this.state.validationText}</Text>
             </ScrollView>
         )
   }

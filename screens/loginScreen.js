@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, TextInput, Button } from 'react-native-web';
+import { Text, ScrollView, TextInput, Button } from 'react-native-web';
 
 class LoginScreen extends Component{
   constructor(props){
@@ -8,11 +8,16 @@ class LoginScreen extends Component{
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      validationText: ""
+      
     }
   }
 
   login = async () => {
+    this.setState({
+      validationText: ""
+    })
     if(this.state.email != "" && this.state.password != ""){
       if(this.state.email.includes("@")){
         return fetch("http://localhost:3333/api/1.0.0/login", {
@@ -26,13 +31,14 @@ class LoginScreen extends Component{
             if(response.status === 200){
                 return response.json()
             }else if(response.status === 400){
-                throw 'Invalid email or password';
+                this.setState({
+                  validationText: "- Email address or password are incorrect"
+                })
             }else{
                 throw 'Something went wrong';
             }
         })
         .then(async (responseJson) => {
-                console.log(responseJson);
                 await AsyncStorage.setItem('@session_token', responseJson.token);
                 await AsyncStorage.setItem('user_id', responseJson.id);
                 this.props.navigation.navigate("profileScreen");
@@ -41,11 +47,14 @@ class LoginScreen extends Component{
             console.log(error);
         })
       }else{
-        //Some sort of alert here
-        console.log("@ me silly ")
+        this.setState({
+          validationText: "- Email address is invalid, does not contain @ symbol"
+        })
       }
     }else{
-      console.log("You are missing one or more text boxes")
+      this.setState({
+        validationText: "- TextBox is missing data"
+      })
     }
   }
 
@@ -73,6 +82,7 @@ class LoginScreen extends Component{
           color="darkblue"
           onPress={() => this.props.navigation.navigate("Signup")}
         />
+        <Text>{this.state.validationText}</Text>
       </ScrollView>
     );
   }

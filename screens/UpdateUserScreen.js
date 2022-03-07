@@ -14,7 +14,8 @@ class UpdateUserScreen extends Component{
       email: "",
       first_name: "",
       last_name: "",
-      password_verify: ""
+      password_verify: "",
+      validationText: ""
     }
   }
 
@@ -65,54 +66,110 @@ class UpdateUserScreen extends Component{
     })
   }
 
+
   updateUser = async() =>{
 
+    this.setState({
+      validationText: ""
+    })
     let to_send = {};
+    let tempString = ""
+    let firstNameChange, lastNameChange = false
+    let passValidation = true
         
     if(this.state.first_name != this.state.first_name_og && this.state.first_name != ""){
       to_send['first_name'] = this.state.first_name;
+      firstNameChange = true
     }
 
     if(this.state.last_name != this.state.last_name_og && this.state.last_name != ""){
       to_send['last_name'] = this.state.last_name;
+      lastNameChange = true
     }
 
     if(this.state.email != this.state.email_og && this.state.email != ""){
-      to_send['email'] = this.state.email;
+      if(this.state.email.includes("@")){
+        to_send['email'] = this.state.email;
+      }else{
+        tempString = tempString + "- Email does not contain @ symbol \n"
+        passValidation = false
+      }
     }
 
-    if(this.state.password != "" && this.state.password === this.state.password_verify){
-      to_send['password'] = this.state.password;
+    if(this.state.password != "" && this.state.password_verify != ""){
+      let tempFirstName, tempLastName
+
+      if(firstNameChange){
+        tempFirstName = this.state.first_name
+      }else{
+        tempFirstName = this.state.first_name_og
+      }
+
+      if(lastNameChange){
+        tempLastName = this.state.last_name
+      }else{
+        tempLastName = this.state.last_name_og
+      }
+      //Password Validation
+      if(this.state.password.length > 7){
+        if(/\d/.test(this.state.password)){
+          if(/[A-Z]/.test(this.state.password)){
+            if(!this.state.password.includes(tempFirstName) && ! this.state.password.includes(tempLastName)){
+              if(this.state.password === this.state.password_verify){
+                to_send['password'] = this.state.password;
+              }else{
+                tempString = tempString + "- The passwords you have entered are not the same \n"
+                passValidation = false
+              }
+            }else{
+              tempString = tempString + "- Password cannot contain first or last name \n"
+              passValidation = false
+            }
+          }else{
+            tempString = tempString + "- Password must contain a capital letter \n"
+            passValidation = false
+          }
+        }else{
+          tempString = tempString + "- Password must contain an integer\n"
+          passValidation = false
+        }
+      }else{
+        tempString = tempString + "- Password must be longer than 7 characters \n"
+        passValidation = false
+      }
     }
 
-    console.log(JSON.stringify(to_send));
+    
     const token = await AsyncStorage.getItem('@session_token');
     const id = await AsyncStorage.getItem('user_id');
-
-    return fetch("http://localhost:3333/api/1.0.0/user/" + id,{
-      'method': 'PATCH',
-      'headers': {
-        'X-Authorization': token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(to_send)
-    })
-    .then((response) => {
-      if(response.status ===200){
-        this.props.navigation.navigate('profileScreen')
-      }else if(response.status === 401){
-        this.props.navigation.navigate("Login");
-      }else if(response.status === 403){
-        console.log("Forbidden")
-      }else if(response.status === 404){
-        console.log("Not Found")
-      }else{
-        throw "Something"
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+    if(passValidation){
+      return fetch("http://localhost:3333/api/1.0.0/user/" + id,{
+        'method': 'PATCH',
+        'headers': {
+          'X-Authorization': token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(to_send)
+      })
+      .then((response) => {
+        if(response.status ===200){
+          this.props.navigation.navigate('profileScreen')
+        }else if(response.status === 401){
+          this.props.navigation.navigate("Login");
+        }else if(response.status === 403){
+          console.log("Forbidden")
+        }else if(response.status === 404){
+          console.log("Not Found")
+        }else{
+          throw "Something"
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+    }else{
+      this.setState({validationText: tempString})
+    }
   }
     
 
@@ -146,6 +203,7 @@ class UpdateUserScreen extends Component{
         <Text>Update a new Password</Text>
         <TextInput
             placeholder="Password here"
+            onChangeText={(value) => this.setState({password: value})}
         />
         <Button
           title="Update Profile Photo"
@@ -153,12 +211,14 @@ class UpdateUserScreen extends Component{
         />
         <Text>Verify Password</Text>
         <TextInput
-          
+          placeholder="Password Here"
+          onChangeText={(value) => this.setState({password_verify: value})}
         />
         <Button
             title="Save Data"
             onPress={() => this.updateUser()}
         />
+        <Text>{this.state.validationText}</Text>
     </View>
     );
   }

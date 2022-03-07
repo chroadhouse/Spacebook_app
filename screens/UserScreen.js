@@ -12,7 +12,8 @@ class FriendsScreen extends Component{
             postList: [],
             likeTitle: "Like",
             postInput: "",
-            friends: false
+            friends: false, 
+            validationText: ""
         }
     }
     
@@ -69,6 +70,7 @@ class FriendsScreen extends Component{
     }
 
     add_post = async () => {
+
         const token = await AsyncStorage.getItem("@session_token")
         if(this.state.postInput != ""){
             let to_send =  {
@@ -96,6 +98,8 @@ class FriendsScreen extends Component{
             .catch((error) => {
                 console.log("Tried to add post with no data")
             })
+        }else{
+            this.setState({validationText: "- Trying to add post with no text"})
         }
     }
 
@@ -170,46 +174,46 @@ class FriendsScreen extends Component{
         
     }
 
-    likePost = async (postItem) => {
-        let likeRequest
-        console.log(this.state.likeTitle)
-        if(this.state.likeTitle == "Like"){
-            likeRequest = "POST"
-            this.setState({
-                likeTitle: "Unlike"
-            })
-        }else{
-            likeRequest = "DELETE"
-            this.setState({
-                likeTitle: "Like"
-            })
-        }
+    // likePost = async (postItem) => {
+    //     let likeRequest
+    //     console.log(this.state.likeTitle)
+    //     if(this.state.likeTitle == "Like"){
+    //         likeRequest = "POST"
+    //         this.setState({
+    //             likeTitle: "Unlike"
+    //         })
+    //     }else{
+    //         likeRequest = "DELETE"
+    //         this.setState({
+    //             likeTitle: "Like"
+    //         })
+    //     }
 
-        const token = await AsyncStorage.getItem('@session_token')
-        const id = await AsyncStorage.getItem('user_id')
-        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/post/"+postItem.post_id+"/like", {
-            'method': likeRequest,
-            'headers': {
-                'X-Authorization': token
-            }
-         })
-        .then((response) =>{
-            if(response.status === 200){
-                this.get_posts()
-            }else if(response.status === 401){
-                this.props.navigation.navigate("Login")
-            }else if(response.status === 403){
-                console.log("You have already liked the post")
-            }else if(response.status === 404){
-                console.log("Not Found")
-            }else{
-                throw "Something"
-            }
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-    }
+    //     const token = await AsyncStorage.getItem('@session_token')
+    //     const id = await AsyncStorage.getItem('user_id')
+    //     return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/post/"+postItem.post_id+"/like", {
+    //         'method': likeRequest,
+    //         'headers': {
+    //             'X-Authorization': token
+    //         }
+    //      })
+    //     .then((response) =>{
+    //         if(response.status === 200){
+    //             this.get_posts()
+    //         }else if(response.status === 401){
+    //             this.props.navigation.navigate("Login")
+    //         }else if(response.status === 403){
+    //             console.log("You have already liked the post")
+    //         }else if(response.status === 404){
+    //             console.log("Not Found")
+    //         }else{
+    //             throw "Something"
+    //         }
+    //     })
+    //     .catch((error) => {
+    //         console.log(error)
+    //     })
+    // }
 
     render(){
         if(!this.state.friends){
@@ -253,6 +257,7 @@ class FriendsScreen extends Component{
                         onChangeText={(postInput) => this.setState({postInput})}
                         value={this.state.postInput}
                     />
+                    <Text>{this.state.validationText}</Text>
                     <Button
                         title="Add Post"
                         onPress={() => this.add_post()}
