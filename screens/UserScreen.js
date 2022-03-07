@@ -131,7 +131,6 @@ class FriendsScreen extends Component{
             }
         })
         .then((responseBlob) =>{
-            console.log("Second section")
             let data = URL.createObjectURL(responseBlob);
             this.setState({
                 photo: data,
@@ -144,6 +143,7 @@ class FriendsScreen extends Component{
     
 
     addFriend = async () =>{
+        this.setState({validationText:"You have already sent your request"})
         //Send a friend request for this 
         const value = await AsyncStorage.getItem('@session_token');
         //const id = await AsyncStorage.getItem('user_id');
@@ -161,7 +161,7 @@ class FriendsScreen extends Component{
             }else if(response.status === 401){
                 this.props.navigation.navigate("Login");
             }else if(response.status === 403){
-                console.log("User is already added as a friend")
+                this.setState({validationText:"You have already sent your request"})
             }else if(response.status === 404){
                 console.log('Not found')
             }else{
@@ -235,6 +235,7 @@ class FriendsScreen extends Component{
                         title="Add Friend"
                         onPress = {() => this.addFriend()}
                     />
+                    <Text>{this.state.validationText}</Text>
                 </View>
             )
         }else{
