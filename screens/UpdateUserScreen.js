@@ -49,7 +49,7 @@ class UpdateUserScreen extends Component{
       if(response.status ===200){
         return response.json()
       }else if(response.status === 401){
-        this.props.navigation.navigate("Login");
+        this.props.navigation.navigate("login");
       }else{
         throw 'Something went wrong';
       }
@@ -155,7 +155,7 @@ class UpdateUserScreen extends Component{
         if(response.status ===200){
           this.props.navigation.navigate('profileScreen')
         }else if(response.status === 401){
-          this.props.navigation.navigate("Login");
+          this.props.navigation.navigate("login");
         }else if(response.status === 403){
           console.log("Forbidden")
         }else if(response.status === 404){
@@ -177,7 +177,7 @@ class UpdateUserScreen extends Component{
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     if(value == null){
-      this.props.navigation.navigate('Login');
+      this.props.navigation.navigate('login');
     }
   };
 
@@ -207,7 +207,7 @@ class UpdateUserScreen extends Component{
         />
         <Button
           title="Update Profile Photo"
-          onPress={() => this.props.navigation.navigate('CameraScreen')}
+          onPress={() => this.props.navigation.navigate('cameraScreen')}
         />
         <Text>Verify Password</Text>
         <TextInput

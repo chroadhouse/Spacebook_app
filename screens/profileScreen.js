@@ -14,7 +14,6 @@ class ProfileScreen extends Component{
       photo: null,
       postList: [],
       postInput: "",
-      likeTitle: "Like",
       userInfo: [], 
       validationText: ""
     }
@@ -96,7 +95,7 @@ class ProfileScreen extends Component{
           })
           this.get_posts()
         }else if(response.status === 401) {
-          this.props.navigation.navigate("Login")
+          this.props.navigation.navigate("login")
         }else if(response.status === 404){
           console.log("Not Found")
         }else{
@@ -130,7 +129,7 @@ class ProfileScreen extends Component{
         console.log("Looking good response 200")
         return response.json()
       }else if(response.status === 401){
-        this.props.navigation.navigate("Login")
+        this.props.navigation.navigate("login")
       }else if(response.status === 403){
         console.log("Can only view posts from your friends or your own posts")
       }else if(response.status === 404){
@@ -162,7 +161,7 @@ class ProfileScreen extends Component{
       if(response.status === 200){
         return response.blob()
       }else if(response.status === 401){
-        this.props.navigation.navigate("Login")
+        this.props.navigation.navigate("login")
       }else if(response.status === 404){
         console.log("Not found")
       }else{
@@ -183,46 +182,11 @@ class ProfileScreen extends Component{
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     if(value == null){
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('login');
     }
   };
 
-  
-  // likePost = async (postItem) =>{
-  //   let likeRequest
-  //   console.log(this.state.likeTitle)
-  //   if(this.state.likeTitle =="Like"){
-  //     likeRequest = "POST"
-  //     this.setState({
-  //       likeTitle: "Unlike"
-  //     })
-  //   }else{
-  //     likeRequest = "DELETE"
-  //     this.setState({
-  //       likeTitle: "Like"
-  //     })
-  //   }
-    
-
-  //   const token = await AsyncStorage.getItem('@session_token')
-  //   const id = await AsyncStorage.getItem('user_id')
-  //   return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/post/"+postItem.post_id+"/like", {
-  //     'method': likeRequest,
-  //     'headers': {
-  //       'X-Authorization': token
-  //     }
-  //   })
-  //   .then((response) =>{
-  //     if(response.status === 200){
-  //       console.log("response is 2000 - good")
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.log(error)
-  //   })
-    
-  // } 
-
+   
   render() {
     if (this.state.isLoading){
       return (
@@ -254,7 +218,7 @@ class ProfileScreen extends Component{
             <Text>{this.state.firstName} {this.state.lastName}</Text>
             <Button
               title='Update Profile'
-              onPress={() => this.props.navigation.navigate("UpdateUserScreen")}
+              onPress={() => this.props.navigation.navigate("updateUserScreen")}
             />
             <Text>Add Post</Text>
             <TextInput
@@ -272,7 +236,7 @@ class ProfileScreen extends Component{
               renderItem={({item}) => (
                 <View>
                   <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('SinglePostScreen',{item: item.post_id, userInfo: this.state.userInfo.user_id })}
+                    onPress={() => this.props.navigation.navigate('singlePostScreen',{item: item.post_id, userInfo: this.state.userInfo.user_id })}
                   >
                     <Text>{item.text}</Text>
                     <Text>{item.numLikes} Likes</Text>

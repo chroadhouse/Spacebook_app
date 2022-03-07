@@ -41,7 +41,7 @@ class SinglePostScreen extends Component{
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
         if(value == null){
-            this.props.navigation.navigate('Login');
+            this.props.navigation.navigate('login');
         }
     };
 
@@ -103,7 +103,7 @@ class SinglePostScreen extends Component{
                 console.log("Response is good")
                 this.props.navigation.navigate("profileScreen")
             }else if(response.status === 401){
-                this.props.navigation.navigate("Login");
+                this.props.navigation.navigate("login");
             }else if(response.status === 403){
                 console.log("You can only delete your own posts")
             }else if(response.status === 404){
@@ -176,7 +176,7 @@ class SinglePostScreen extends Component{
             if(response.status === 200){
                 console.log("response is 2000 - good")
             }else if(response.status === 401){
-                this.props.navigation.navigate("Login")
+                this.props.navigation.navigate("login")
             }else if(response.status === 403){
                 console.log("Forbidden ")
             }else{
@@ -201,7 +201,7 @@ class SinglePostScreen extends Component{
             if(response.status === 200){
                 return response.json()
             }else if(response.status === 401){
-                this.props.navigation.navigate("Login")
+                this.props.navigation.navigate("login")
             }else if(response.status === 403){
                 console.log("Can only view the posts of yourself or friends")
             }else if(response.status === 404){

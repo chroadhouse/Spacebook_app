@@ -3,7 +3,7 @@ import {Text, Button, TouchableOpacity} from 'react-native'
 import { ScrollView, View, FlatList } from 'react-native-web';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class AllFriendsScreen extends Component{
+class AllFriendsScreen extends Component {
     constructor(props){
         super(props);
 
@@ -28,7 +28,7 @@ class AllFriendsScreen extends Component{
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
         if(value == null){
-            this.props.navigation.navigate('Login');
+            this.props.navigation.navigate('login');
         }
     };
     
@@ -48,7 +48,7 @@ class AllFriendsScreen extends Component{
             if(response.status ===200){
                 return response.json()
             }else if(response.status === 401){
-                this.props.navigation.navigate("Login");
+                this.props.navigation.navigate("login");
             }else if(response.status === 403){
                 console.log("You can only view the friends of yourself or your friends");
             }else if(response.status === 404){
@@ -70,13 +70,13 @@ class AllFriendsScreen extends Component{
         })
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <View>
                 <ScrollView>
                 <Button
                     title='Friend Requests'
-                    onPress={() => this.props.navigation.navigate('FriendRequestScreen')}
+                    onPress={() => this.props.navigation.navigate('friendRequestScreen')}
                 />
                 <FlatList
                         data={this.state.listData}
@@ -85,7 +85,7 @@ class AllFriendsScreen extends Component{
                             <Text>Testing</Text>
                             <Text>{item.user_id}</Text>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('UserScreen',{item: item })}
+                                onPress={() => this.props.navigation.navigate('userScreen',{item: item})}
                             >
                             <Text>{item.user_givenname} {item.user_familyname}</Text>
                             </TouchableOpacity>

@@ -26,10 +26,10 @@ const Stack = createNativeStackNavigator();
 function Tabs() {
     return(
         <Tab.Navigator>
-            <Tab.Screen name="Profile" component={ProfileScreen}/>
-            <Tab.Screen name="Search" component={SearchScreen}/>
-            <Tab.Screen name="Friends" component={AllFriendsScreen}/>
-            <Tab.Screen name="Logout" component={LogoutScreen}/>
+            <Tab.Screen name="profile" component={ProfileScreen} />
+            <Tab.Screen name="search" component={SearchScreen} />
+            <Tab.Screen name="friends" component={AllFriendsScreen} />
+            <Tab.Screen name="logout" component={LogoutScreen} />
         </Tab.Navigator>
     );
 }
@@ -42,14 +42,14 @@ class App extends Component {
             //Do an if Statement for logged in 
             <NavigationContainer>
                 <Stack.Navigator>
-                    <Stack.Screen name="Login" component={LoginScreen}/>
-                    <Stack.Screen name="Signup" component={SignupScreen}/>
+                    <Stack.Screen name="login" component={LoginScreen} />
+                    <Stack.Screen name="signup" component={SignupScreen} />
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
-                    <Stack.Screen name="UpdateUserScreen" component={UpdateUserScreen}/>
-                    <Stack.Screen name="UserScreen" component={FriendsScreen}/>
-                    <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen}/>
-                    <Stack.Screen name="CameraScreen" component={CameraScreen}/>
-                    <Stack.Screen name="SinglePostScreen" component={SinglePostScreen}/>
+                    <Stack.Screen name="updateUserScreen" component={UpdateUserScreen} />
+                    <Stack.Screen name="userScreen" component={FriendsScreen} />
+                    <Stack.Screen name="friendRequestScreen" component={FriendRequestScreen} />
+                    <Stack.Screen name="cameraScreen" component={CameraScreen} />
+                    <Stack.Screen name="singlePostScreen" component={SinglePostScreen} />
                 </Stack.Navigator>
             </NavigationContainer>          
         );

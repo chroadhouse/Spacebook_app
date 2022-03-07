@@ -26,7 +26,7 @@ class LogoutScreen extends Component {
         if(value !== null) {
           this.setState({token:value});
         }else{
-            this.props.navigation.navigate("Login");
+            this.props.navigation.navigate("login");
         }
     }
 
@@ -41,9 +41,9 @@ class LogoutScreen extends Component {
         })
         .then((response) => {
             if(response.status === 200){
-                this.props.navigation.navigate("Login");
+                this.props.navigation.navigate("login");
             }else if(response.status === 401){
-                this.props.navigation.navigate("Login");
+                this.props.navigation.navigate("login");
             }else{
                 throw 'Something went wrong';
             }
@@ -65,7 +65,7 @@ class LogoutScreen extends Component {
                 <Button
                     title="No"
                     color="darkblue"
-                    onPress={() => this.props.navigation.navigate("Profile")}
+                    onPress={() => this.props.navigation.navigate("profile")}
                 />
             </ScrollView>
         )

@@ -78,7 +78,7 @@ class SignupScreen extends Component {
             })
             .then((responseJson) => {
                 console.log("User created with ID: ",responseJson);
-                this.props.navigation.navigate("Login")
+                this.props.navigation.navigate("login")
             })
             .catch((error) => {
                 console.log(error)
