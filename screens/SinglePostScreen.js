@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Text, Button, TextInput, View, ScrollView} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FontAwesome5 } from '@expo/vector-icons/';
 
 
 class SinglePostScreen extends Component{
@@ -16,7 +17,7 @@ class SinglePostScreen extends Component{
             editPost: false,
             userVerifed: false,
             updating: false, 
-            likeTitle: "Like", 
+            likeTitle: "thumbs-up", 
             numberOfLikes: 0, 
             validationText: "",
             ownProfile: false
@@ -140,7 +141,7 @@ class SinglePostScreen extends Component{
                 
                 }else if(response.status === 400 || response.status === 403){
                     this.setState({
-                        likeTitle: "unlike"
+                        likeTitle: "thumbs-down"
                     })
                 }
                 
@@ -153,15 +154,15 @@ class SinglePostScreen extends Component{
 
     likePost = async () =>{
         let likeRequest
-        if(this.state.likeTitle =="Like"){
+        if(this.state.likeTitle =="thumbs-up"){
             likeRequest = "POST"
             this.setState({
-                likeTitle: "Unlike"
+                likeTitle: "thumbs-down"
             })
         }else{
             likeRequest ="DELETE"
             this.setState({
-                likeTitle: "Like"
+                likeTitle: "thumbs-up"
             })
         }
 
@@ -289,10 +290,11 @@ class SinglePostScreen extends Component{
                             numberOfLines={4}
                             defaultValue={this.state.postData.text}
                         />
-                        <Button
+                        {/* <Button
                             title={this.state.likeTitle}
                             onPress={() => this.likePost()}
-                        />
+                        /> */}
+                        <FontAwesome5.Button name={this.state.likeTitle} onPress={() => this.likePost()}/>
                     </ScrollView>
                 )
             }else{

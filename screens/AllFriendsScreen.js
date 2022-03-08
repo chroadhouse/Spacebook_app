@@ -85,7 +85,7 @@ class AllFriendsScreen extends Component {
                             <Text>Testing</Text>
                             <Text>{item.user_id}</Text>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('userScreen',{item: item})}
+                                onPress={() => this.props.navigation.navigate('userScreen',{userID: item.user_id})}
                             >
                             <Text>{item.user_givenname} {item.user_familyname}</Text>
                             </TouchableOpacity>

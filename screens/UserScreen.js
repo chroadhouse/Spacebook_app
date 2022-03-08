@@ -8,7 +8,8 @@ class FriendsScreen extends Component{
 
         this.state = {
             photo: null,
-            userInfo: this.props.route.params.item,
+            userID: this.props.route.params.userID,
+            userInfo: [], 
             postList: [],
             
             postInput: "",
@@ -21,10 +22,42 @@ class FriendsScreen extends Component{
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
+          this.getData();
           this.get_photo();
           this.get_posts();
         });
         
+    }
+
+    getData = async () =>{
+        const token = await AsyncStorage.getItem('@session_token')
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.userID,{
+            'method': 'get',
+            'headers': {
+                'X-Authorization': token,
+                'Content-Type': 'application/json'
+
+            },
+        })
+        .then((response) => {
+            if(response.status ===200){
+                return response.json()
+            }else if(response.status === 401){
+                this.props.navigation.navigate("Login");
+            }else if(response.status === 404){
+                console.log("Not found")
+            }else{
+                throw 'Something went wrong';
+            }
+        })
+        .then((responseJson) => {
+            this.setState({
+                userInfo: responseJson   
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
     
     get_posts = async () =>{
@@ -32,7 +65,7 @@ class FriendsScreen extends Component{
         //flatlist will have the 
         //Data is being added - look @ postman - but it is not showing up after
         const token = await AsyncStorage.getItem("@session_token");
-        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/post", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post", {
           'method':'get',
           'headers': {
             'X-Authorization': token
@@ -63,7 +96,7 @@ class FriendsScreen extends Component{
         .catch((error) => {
           console.log(error)
         })
-      }
+    }
 
     componentWillUnmount(){
         this.unsubscribe();
@@ -113,7 +146,7 @@ class FriendsScreen extends Component{
 
     get_photo = async () =>{
         const token = await AsyncStorage.getItem("@session_token");
-        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/photo", {
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/photo", {
             'method': 'get',
             'headers': {
                 'X-Authorization': token
@@ -147,9 +180,9 @@ class FriendsScreen extends Component{
         //Send a friend request for this 
         const value = await AsyncStorage.getItem('@session_token');
         //const id = await AsyncStorage.getItem('user_id');
-        console.log(this.state.userInfo.user_id)
         
-        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userInfo.user_id+"/friends",{
+        
+        return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/friends",{
             'method': 'post',
             'headers' : {
                     'X-Authorization': value
@@ -229,7 +262,7 @@ class FriendsScreen extends Component{
                         renderItem={({item}) => (
                             <View>
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('singlePostScreen',{item: item.post_id, userInfo: this.state.userInfo.user_id})}
+                                onPress={() => this.props.navigation.navigate('singlePostScreen',{item: item.post_id, userInfo: this.state.userID})}
                             >
                                 <Text>{item.text}</Text>
                                 <Text>{item.numLikes} Likes</Text> 

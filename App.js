@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { FontAwesome5 } from '@expo/vector-icons/';
 
 
 import LoginScreen from './screens/LoginScreen.js';
@@ -25,7 +26,27 @@ const Stack = createNativeStackNavigator();
 
 function Tabs() {
     return(
-        <Tab.Navigator>
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
+    
+                if (route.name === 'profile') {
+                    iconName = 'user-alt'
+                } else if (route.name === 'search') {
+                    iconName = focused ? 'list' : 'search';
+                } else if (route.name === 'friends') {
+                    iconName = "users"
+                }else if (route.name === 'logout') {
+                    iconName = 'sign-out-alt';
+                }
+                // You can return any component that you like here!
+                return <FontAwesome5 name={iconName} size={size} color={color} />;
+                },
+                tabBarActiveTintColor: 'tomato',
+                tabBarInactiveTintColor: 'gray',
+            })}
+        >
             <Tab.Screen name="profile" component={ProfileScreen} />
             <Tab.Screen name="search" component={SearchScreen} />
             <Tab.Screen name="friends" component={AllFriendsScreen} />
@@ -36,6 +57,7 @@ function Tabs() {
 
 
 class App extends Component {
+    //Get the number of friends
     render(){
         return(
             //Need to do some conditional rendering

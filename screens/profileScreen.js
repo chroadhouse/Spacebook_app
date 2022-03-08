@@ -44,28 +44,28 @@ class ProfileScreen extends Component{
 
         },
       })
-      .then((response) => {
-          if(response.status ===200){
-            return response.json()
-          }else if(response.status === 401){
-            this.props.navigation.navigate("Login");
-          }else if(response.status === 404){
-            console.log("Not found")
-          }else{
-            throw 'Something went wrong';
-          }
-      })
-      .then((responseJson) => {
-          this.setState({
-            userInfo: responseJson,
-            isLoading: false,
-            firstName: responseJson.first_name,
-            lastName: responseJson.last_name
-          })
-      })
-      .catch((error) => {
-          console.log(error);
-      })
+    .then((response) => {
+        if(response.status ===200){
+          return response.json()
+        }else if(response.status === 401){
+          this.props.navigation.navigate("Login");
+        }else if(response.status === 404){
+          console.log("Not found")
+        }else{
+          throw 'Something went wrong';
+        }
+    })
+    .then((responseJson) => {
+        this.setState({
+          userInfo: responseJson,
+          isLoading: false,
+          firstName: responseJson.first_name,
+          lastName: responseJson.last_name
+        })
+    })
+    .catch((error) => {
+        console.log(error);
+    })
   }
   //Functionalilty for updating a post - View a single post and then from there you can edit the post or delete the post ? 
 
