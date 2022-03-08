@@ -176,7 +176,7 @@ class FriendsScreen extends Component{
     
 
     addFriend = async () =>{
-        this.setState({validationText:"You have already sent your request"})
+        this.setState({validationText:""})
         //Send a friend request for this 
         const value = await AsyncStorage.getItem('@session_token');
         //const id = await AsyncStorage.getItem('user_id');
@@ -246,6 +246,10 @@ class FriendsScreen extends Component{
                         }}
                     />
                     <Text>{this.state.userInfo.user_givenname}</Text>
+                    <Button
+                        title="Friends"
+                        onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})}
+                    />
                     <Text>Add Post</Text>
                     <TextInput
                         placeholder="What do you want to write about"

@@ -5,13 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FontAwesome5 } from '@expo/vector-icons/';
 
 
+
 import LoginScreen from './screens/LoginScreen.js';
 import ProfileScreen from './screens/ProfileScreen.js';
 import SignupScreen from './screens/SignupScreen.js';
 import SearchScreen from './screens/SearchScreen.js';
 import LogoutScreen from './screens/LogoutScreen.js';
 import UpdateUserScreen from './screens/UpdateUserScreen.js';
-import FriendsScreen from './screens/UserScreen.js';
+import UserScreen from './screens/UserScreen.js';
 import AllFriendsScreen from './screens/AllFriendsScreen.js';
 import FriendRequestScreen from './screens/FriendRequestScreen.js';
 import CameraScreen from './screens/CameraScreen.js';
@@ -24,7 +25,7 @@ const Stack = createNativeStackNavigator();
 
 // Friends request tabs need to be able to see the difference between the two 
 
-function Tabs() {
+function Tabs(props) {
     return(
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -47,13 +48,14 @@ function Tabs() {
                 tabBarInactiveTintColor: 'gray',
             })}
         >
-            <Tab.Screen name="profile" component={ProfileScreen} />
-            <Tab.Screen name="search" component={SearchScreen} />
-            <Tab.Screen name="friends" component={AllFriendsScreen} />
-            <Tab.Screen name="logout" component={LogoutScreen} />
+            <Tab.Screen name="profile" component={ProfileScreen} options={{title:'Profile'}} />
+            <Tab.Screen name="search" component={SearchScreen} options={{title: 'Search'}} />
+            <Tab.Screen name="friends" component={FriendRequestScreen} options={{title: 'Friend Requests'}} />
+            <Tab.Screen name="logout" component={LogoutScreen} options={{title:'Logout'}} />
         </Tab.Navigator>
     );
 }
+//Friends needs to become friend request and friend request needs to become freinds
 
 
 class App extends Component {
@@ -68,10 +70,11 @@ class App extends Component {
                     <Stack.Screen name="signup" component={SignupScreen} />
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
                     <Stack.Screen name="updateUserScreen" component={UpdateUserScreen} />
-                    <Stack.Screen name="userScreen" component={FriendsScreen} />
-                    <Stack.Screen name="friendRequestScreen" component={FriendRequestScreen} />
+                    <Stack.Screen name="userScreen" component={UserScreen} />
+                    <Stack.Screen name="friendsScreen" component={AllFriendsScreen} />
                     <Stack.Screen name="cameraScreen" component={CameraScreen} />
                     <Stack.Screen name="singlePostScreen" component={SinglePostScreen} />
+                    
                 </Stack.Navigator>
             </NavigationContainer>          
         );

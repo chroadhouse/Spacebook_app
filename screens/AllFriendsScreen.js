@@ -8,7 +8,8 @@ class AllFriendsScreen extends Component {
         super(props);
 
         this.state = {
-            listData: []
+            listData: [],
+            userID: this.props.route.params.userID
         }
     }
     
@@ -35,8 +36,8 @@ class AllFriendsScreen extends Component {
     getData = async () => {
         //This is just a generic statment I think 
         const token = await AsyncStorage.getItem('@session_token');
-        const id = await AsyncStorage.getItem('user_id');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + id+"/friends",{
+        //const id = await AsyncStorage.getItem('user_id');
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.userID+"/friends",{
             'method': 'get',
             'headers': {
               'X-Authorization': token,
@@ -74,16 +75,10 @@ class AllFriendsScreen extends Component {
         return (
             <View>
                 <ScrollView>
-                <Button
-                    title='Friend Requests'
-                    onPress={() => this.props.navigation.navigate('friendRequestScreen')}
-                />
                 <FlatList
                         data={this.state.listData}
                         renderItem={({item}) => (
                             <View>
-                            <Text>Testing</Text>
-                            <Text>{item.user_id}</Text>
                             <TouchableOpacity
                                 onPress={() => this.props.navigation.navigate('userScreen',{userID: item.user_id})}
                             >

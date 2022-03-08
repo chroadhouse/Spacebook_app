@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, FlatList, ScrollView,Button, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput } from 'react-native-web';
+import {FontAwesome5} from '@expo/vector-icons'
 
 class ProfileScreen extends Component{
   constructor(props){
@@ -15,7 +16,8 @@ class ProfileScreen extends Component{
       postList: [],
       postInput: "",
       userInfo: [], 
-      validationText: ""
+      validationText: "",
+      userID: ""
     }
   }
 
@@ -23,8 +25,8 @@ class ProfileScreen extends Component{
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
       this.getData();
-      this.get_photo()
-      this.get_posts()
+      this.get_photo();
+      this.get_posts();
     });
   }
 
@@ -181,8 +183,13 @@ class ProfileScreen extends Component{
 
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
+    const id = await AsyncStorage.getItem('user_id');
     if(value == null){
         this.props.navigation.navigate('login');
+    }else{
+      this.setState({
+        userID: id
+      })
     }
   };
 
@@ -210,16 +217,17 @@ class ProfileScreen extends Component{
                 uri: this.state.photo,
               }}
               style={{
-                width: 400,
-                height: 400,
+                width: 200,
+                height: 200,
                 borderWidth: 5 
               }}
             />
             <Text>{this.state.firstName} {this.state.lastName}</Text>
             <Button
-              title='Update Profile'
-              onPress={() => this.props.navigation.navigate("updateUserScreen")}
+              title='Friends'
+              onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})}
             />
+            <FontAwesome5.Button name={'user-edit'} onPress={() => this.props.navigation.navigate('updateUserScreen')}/>
             <Text>Add Post</Text>
             <TextInput
               placeholder="Add posts"

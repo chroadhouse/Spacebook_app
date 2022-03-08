@@ -7,7 +7,8 @@ class FriendRequestScreen extends Component{
         super(props);
 
         this.state = {
-            requestList: []
+            requestList: [], 
+            userID: "",
         }
     }
 
@@ -24,10 +25,15 @@ class FriendRequestScreen extends Component{
 
     checkLoggedIn = async () => {
         const value = await AsyncStorage.getItem('@session_token');
+        const id = await AsyncStorage.getItem('user_id');
         if(value == null){
             this.props.navigation.navigate('login');
+        }else{
+            this.setState({
+                userID: id
+            });
         }
-    };
+    }
 
     getData = async () =>{
         const token = await AsyncStorage.getItem('@session_token');
@@ -137,6 +143,10 @@ class FriendRequestScreen extends Component{
                                 />
                             </View>
                         )}
+                    />
+                    <Button
+                        title='Friends'
+                        onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})} 
                     />
                 </ScrollView>
             </View>
