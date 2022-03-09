@@ -11,34 +11,54 @@ class SearchScreen extends Component {
             friendSearch: false,
             listData: [],
             selectedUserID: 0,
-            validationText: ""
+            validationText: "",
+            limit: 5,
+            offset: 0,
+            nextEnabled: false,
+            backEnabled: true
+
         }
     }
-    //Having issues with the userInput but I can't properly think why
-    //Look at this in depth tomorrow
+
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
         });
-
     }
     
     componentWillUnmount(){
         this.unsubscribe();
     }
     
-    getData = async () => {
-            //limit - lmit the number of returns
-            //offset - number of items to skip before new start - only really need to fliter one thing
+    getData = async (page) => {
+        if(page == -1){
+            let temp = this.state.offset - this.state.limit
+            this.setState({
+                offset: temp,
+                nextEnabled: false
+            })
+        }else if(page ==0){
+            this.setState({
+                offset: 0
+                
+            })
+        }else if(page == 1){
+            let temp = this.state.offset + this.state.limit
+            this.setState({
+                offset: temp,
+                backEnabled: false
+            }) 
+        }
         
         this.setState({validationText: ""})
         let searchMethod = 'all'
         if(this.state.friendSearch){
             searchMethod = 'friends'
         }
+        //if(this.state.userInput !== ""){
         if(this.state.userInput !== ""){
             const value = await AsyncStorage.getItem('@session_token');
-            return fetch(`http://localhost:3333/api/1.0.0/search?q=${this.state.userInput}&search_in=${searchMethod}`,{
+            return fetch(`http://localhost:3333/api/1.0.0/search?q=${this.state.userInput}&search_in=${searchMethod}&limit=${this.state.limit}&offset=${this.state.offset}`,{
                 'headers': {
                      'X-Authorization': value
                 }
@@ -56,7 +76,8 @@ class SearchScreen extends Component {
             })
             .then((responseJson) => {
                 this.setState({
-                    listData: responseJson
+                    listData: responseJson,
+                    limit: 5
                 })
             })
             .catch((error) => {
@@ -64,7 +85,8 @@ class SearchScreen extends Component {
             })
         }else{
             this.setState({
-                validationText: "You have not entered Text in the text box"
+                validationText: "You have not entered Text in the text box",
+                backEnabled: true
             })
         }
     }
@@ -96,14 +118,13 @@ class SearchScreen extends Component {
                     />
                     <Button
                         title="Search:"
-                        onPress = {() => this.getData()}
+                        onPress = {() => this.getData(0)}
                     />
                     <Text>{this.state.validationText}</Text>
                     <FlatList
                         data={this.state.listData}
                         renderItem={({item}) => (
                             <View>
-                            
                             <TouchableOpacity
                                 onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id })}
                             >
@@ -111,6 +132,16 @@ class SearchScreen extends Component {
                             </TouchableOpacity>
                             </View>
                         )}
+                    />
+                    <Button
+                        title='Next'
+                        onPress={() => this.getData(1)}
+                        disabled={this.state.nextEnabled}
+                    />
+                    <Button
+                        title='Back'
+                        onPress={() => this.getData(-1)}
+                        disabled={this.state.backEnabled}
                     />
                 </ScrollView>
             </View>
