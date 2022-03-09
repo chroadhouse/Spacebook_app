@@ -105,7 +105,7 @@ class SearchScreen extends Component {
                             <View>
                             
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('userScreen',{userID: item.user_id })}
+                                onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id })}
                             >
                             <Text>{item.user_givenname} {item.user_familyname}</Text>
                             </TouchableOpacity>

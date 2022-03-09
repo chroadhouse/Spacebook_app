@@ -19,6 +19,7 @@ class FriendsScreen extends Component{
     }
     
 
+
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
           this.checkLoggedIn();
@@ -59,6 +60,8 @@ class FriendsScreen extends Component{
             console.log(error);
         })
     }
+
+    
     
     get_posts = async () =>{
         //Post data will be retrieved here - stored in a list

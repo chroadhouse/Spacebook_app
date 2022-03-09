@@ -12,11 +12,11 @@ import SignupScreen from './screens/SignupScreen.js';
 import SearchScreen from './screens/SearchScreen.js';
 import LogoutScreen from './screens/LogoutScreen.js';
 import UpdateUserScreen from './screens/UpdateUserScreen.js';
-import UserScreen from './screens/UserScreen.js';
 import AllFriendsScreen from './screens/AllFriendsScreen.js';
 import FriendRequestScreen from './screens/FriendRequestScreen.js';
 import CameraScreen from './screens/CameraScreen.js';
 import SinglePostScreen from './screens/SinglePostScreen.js';
+
 
 
 
@@ -25,7 +25,8 @@ const Stack = createNativeStackNavigator();
 
 // Friends request tabs need to be able to see the difference between the two 
 
-function Tabs(props) {
+function Tabs() {
+    
     return(
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -48,7 +49,7 @@ function Tabs(props) {
                 tabBarInactiveTintColor: 'gray',
             })}
         >
-            <Tab.Screen name="profile" component={ProfileScreen} options={{title:'Profile'}} />
+            <Tab.Screen name="profile" component={ProfileScreen} initialParams={{id: -1}} options={{title:'Profile'}} />
             <Tab.Screen name="search" component={SearchScreen} options={{title: 'Search'}} />
             <Tab.Screen name="friends" component={FriendRequestScreen} options={{title: 'Friend Requests'}} />
             <Tab.Screen name="logout" component={LogoutScreen} options={{title:'Logout'}} />
@@ -70,7 +71,7 @@ class App extends Component {
                     <Stack.Screen name="signup" component={SignupScreen} />
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
                     <Stack.Screen name="updateUserScreen" component={UpdateUserScreen} />
-                    <Stack.Screen name="userScreen" component={UserScreen} />
+                    <Stack.Screen name="userScreen" component={ProfileScreen} />
                     <Stack.Screen name="friendsScreen" component={AllFriendsScreen} />
                     <Stack.Screen name="cameraScreen" component={CameraScreen} />
                     <Stack.Screen name="singlePostScreen" component={SinglePostScreen} />
