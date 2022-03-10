@@ -14,8 +14,8 @@ class SearchScreen extends Component {
             validationText: "",
             limit: 5,
             offset: 0,
-            nextEnabled: false,
-            backEnabled: true
+            nextDisabled: false,
+            backDisabled: true
 
         }
     }
@@ -35,18 +35,23 @@ class SearchScreen extends Component {
             let temp = this.state.offset - this.state.limit
             this.setState({
                 offset: temp,
-                nextEnabled: false
+                nextDisabled: false
             })
+            if(temp==0){
+                this.setState({
+                    backDisabled: true
+                })
+            }
         }else if(page ==0){
             this.setState({
-                offset: 0
+                offset: 0,
                 
             })
         }else if(page == 1){
             let temp = this.state.offset + this.state.limit
             this.setState({
                 offset: temp,
-                backEnabled: false
+                backDisabled: false
             }) 
         }
         
@@ -56,7 +61,7 @@ class SearchScreen extends Component {
             searchMethod = 'friends'
         }
         //if(this.state.userInput !== ""){
-        if(this.state.userInput !== ""){
+        if(this.state.userInput == ""){
             const value = await AsyncStorage.getItem('@session_token');
             return fetch(`http://localhost:3333/api/1.0.0/search?q=${this.state.userInput}&search_in=${searchMethod}&limit=${this.state.limit}&offset=${this.state.offset}`,{
                 'headers': {
@@ -75,10 +80,20 @@ class SearchScreen extends Component {
                 }
             })
             .then((responseJson) => {
-                this.setState({
-                    listData: responseJson,
-                    limit: 5
-                })
+                console.log(responseJson.length)
+                if(responseJson.length < 5){
+                    this.setState({
+                        listData: responseJson,
+                        limit: 5,
+                        nextDisabled: true
+                    })
+                }else{
+                    this.setState({
+                        listData: responseJson,
+                        limit: 5
+                    })
+                }
+                
             })
             .catch((error) => {
                 console.log(error);
@@ -136,12 +151,12 @@ class SearchScreen extends Component {
                     <Button
                         title='Next'
                         onPress={() => this.getData(1)}
-                        disabled={this.state.nextEnabled}
+                        disabled={this.state.nextDisabled}
                     />
                     <Button
                         title='Back'
                         onPress={() => this.getData(-1)}
-                        disabled={this.state.backEnabled}
+                        disabled={this.state.backDisabled}
                     />
                 </ScrollView>
             </View>
