@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Text, ScrollView, Button} from 'react-native';
+import {Text, ScrollView, Button, StyleSheet, View} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class LogoutScreen extends Component {
@@ -56,20 +56,42 @@ class LogoutScreen extends Component {
 
     render(){
         return (
-            <ScrollView>
-                <Text style={{fontSize:18, fontWeight:'bold', padding:5, margin:5}}>Would you like to log out ? </Text>
-                <Button
-                    title="Yes"
-                    onPress={() => this.logout()}
-                />
-                <Button
-                    title="No"
-                    color="darkblue"
-                    onPress={() => this.props.navigation.navigate("profile")}
-                />
-            </ScrollView>
+            <View>
+                <ScrollView>
+                    <Text style={styles.title}>LOGOUT</Text>
+                    <Text style={styles.messageText}>Are you sure you want to log out? </Text>
+                    <Button
+                        title="Yes"
+                        onPress={() => this.logout()}
+                    />
+                    <Button
+                        title="No"
+                        color="darkblue"
+                        onPress={() => this.props.navigation.navigate("profile")}
+                    />
+                </ScrollView>
+            </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    messageText:{
+        fontSize:18,
+        fontWeight:'bold',
+        padding:5,
+        margin:5,
+        textAlign: 'center'
+    },
+    title: {
+        color:'steelblue',
+        backgroundColor:'lightblue',
+        padding:10,
+        flex: 1,
+        textAlign: 'center',
+        fontSize:25
+      },
+
+})
 
 export default LogoutScreen;

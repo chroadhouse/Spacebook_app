@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text, ScrollView, TextInput, Button } from 'react-native-web';
+import { Text, ScrollView, TextInput, Button, StyleSheet, View } from 'react-native-web';
 
 class LoginScreen extends Component{
   constructor(props){
@@ -60,19 +60,29 @@ class LoginScreen extends Component{
 
   render(){
     return(
-      <ScrollView>
-        <TextInput
-          placeholder="Enter your email"
-          onChangeText={(email) => this.setState({email})}
-          value={this.state.email}
-        />
-        <TextInput
-          placeholder="Enter your password..."
-          onChangeText={(password) => this.setState({password})}
-          value={this.state.password}
-          secureTextEntry
-          style={{padding:5, borderWidth:1, margin:5}}
-        />
+      <View>
+        <Text style={styles.title}>SPACEBOOK</Text>
+        
+        <View style={styles.formItem}>
+          <Text style={styles.formLabel}>Email Address:</Text>
+          <TextInput
+            placeholder="Enter your email"
+            onChangeText={(email) => this.setState({email})}
+            value={this.state.email}
+            style={styles.formInput}
+          />
+        </View>
+
+        <View style={styles.formItem}>
+          <Text style={styles.formLabel}>Password:</Text>
+          <TextInput
+            placeholder="Enter your password..."
+            onChangeText={(password) => this.setState({password})}
+            value={this.state.password}
+            secureTextEntry
+            style={styles.formInput}
+          />
+        </View>
         <Button
           title="Login"
           onPress={() => this.login()}
@@ -83,9 +93,35 @@ class LoginScreen extends Component{
           onPress={() => this.props.navigation.navigate("signup")}
         />
         <Text>{this.state.validationText}</Text>
-      </ScrollView>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  title: {
+    color:'steelblue',
+    backgroundColor:'lightblue',
+    padding:10,
+    flex: 1,
+    textAlign: 'center',
+    fontSize:25
+  },
+  formItem: {
+    padding:25,
+    borderColor: 'steelblue',
+    borderRadius: 3,
+    borderWidth: 1
+  },
+  formLabel: {
+    fontSize:15,
+    color:'steelblue'
+  },
+  formInput: {
+    borderWidth:1,
+    borderColor: 'lightblue',
+    borderRadius:5,
+  }
+})
 
 export default LoginScreen;

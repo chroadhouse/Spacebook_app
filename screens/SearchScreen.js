@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, Text, Button, TextInput, FlatList, View, Switch, TouchableOpacity } from 'react-native-web';
+import { ScrollView, Text, Button, TextInput, FlatList, View, Switch, TouchableOpacity, StyleSheet } from 'react-native-web';
 
 class SearchScreen extends Component {
     constructor(props){
@@ -31,6 +31,7 @@ class SearchScreen extends Component {
     }
     
     getData = async (page) => {
+        
         if(page == -1){
             let temp = this.state.offset - this.state.limit
             this.setState({
@@ -60,8 +61,8 @@ class SearchScreen extends Component {
         if(this.state.friendSearch){
             searchMethod = 'friends'
         }
-        //if(this.state.userInput !== ""){
-        if(this.state.userInput == ""){
+        
+        if(this.state.userInput !== ""){
             const value = await AsyncStorage.getItem('@session_token');
             return fetch(`http://localhost:3333/api/1.0.0/search?q=${this.state.userInput}&search_in=${searchMethod}&limit=${this.state.limit}&offset=${this.state.offset}`,{
                 'headers': {
@@ -101,7 +102,7 @@ class SearchScreen extends Component {
         }else{
             this.setState({
                 validationText: "You have not entered Text in the text box",
-                backEnabled: true
+                backDisabled: true
             })
         }
     }
@@ -116,52 +117,91 @@ class SearchScreen extends Component {
 
     render() {
         return(
-            <View>
+            <View style={{backgroundColor: 'lightblue'}}>
                 <ScrollView>
-                    <TextInput
-                        placeholder="Enter name to search for"
-                        onChangeText={(userInput) => this.setState({userInput})}
-                        value={this.state.userInput}
-                    />
-                    <Text>Friends</Text>
-                    <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={this.state.friendSearch ? "#f5dd4b" : "#f4f3f4"}
-                        value={this.state.friendSearch}
-                        onValueChange = {(value) => this.setState({friendSearch: value})}
+                    <View style={styles.searchContainer}>
+                        <Button
+                            title="Search:"
+                            onPress = {() => this.getData(0)}
+                        />
+                        <TextInput
+                            style = {styles.searchBoxStyle}
+                            placeholder="Enter name to search for"
+                            onChangeText={(userInput) => this.setState({userInput})}
+                            value={this.state.userInput}
+                        />
+                    </View>
+                    <View style={styles.toggleContainer}>
+                        <Text>Friends</Text>
+                        <Switch
+                            trackColor={{ false: "#767577", true: "#81b0ff" }}
+                            thumbColor={this.state.friendSearch ? "#f5dd4b" : "#f4f3f4"}
+                            value={this.state.friendSearch}
+                            onValueChange = {(value) => this.setState({friendSearch: value})}
+                            
+                        />
                         
-                    />
-                    <Button
-                        title="Search:"
-                        onPress = {() => this.getData(0)}
-                    />
-                    <Text>{this.state.validationText}</Text>
+                        <Text>{this.state.validationText}</Text>
+                    </View>
                     <FlatList
                         data={this.state.listData}
                         renderItem={({item}) => (
-                            <View>
+                            <View style={styles.searchItem}>
                             <TouchableOpacity
                                 onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id })}
                             >
-                            <Text>{item.user_givenname} {item.user_familyname}</Text>
+                            <Text style={styles.searchText}>{item.user_givenname} {item.user_familyname}</Text>
                             </TouchableOpacity>
                             </View>
                         )}
                     />
-                    <Button
-                        title='Next'
-                        onPress={() => this.getData(1)}
-                        disabled={this.state.nextDisabled}
-                    />
-                    <Button
-                        title='Back'
-                        onPress={() => this.getData(-1)}
-                        disabled={this.state.backDisabled}
-                    />
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            title='Back'
+                            onPress={() => this.getData(-1)}
+                            disabled={this.state.backDisabled}
+                        />
+                        <Button
+                            title='Next'
+                            onPress={() => this.getData(1)}
+                            disabled={this.state.nextDisabled}
+                        />
+                    </View>
                 </ScrollView>
             </View>
         );      
       }
 }
+
+const styles = StyleSheet.create({
+    searchContainer:{
+        flexDirection: 'row',
+        height: 30,
+       // justifyContent: 'space-between' 
+    },
+    searchBoxStyle: {
+        width: 300
+    },
+    toggleContainer: {
+        flexDirection: 'row',
+        //height: 30
+        padding: 5
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'center'
+    },
+    searchItem: {
+        padding:15,
+        borderColor: 'steelblue',
+        borderRadius: 1,
+        borderWidth: 1
+    },
+    searchText:{
+        textAlign: 'center',
+        fontSize: 18,
+    }
+})
 
 export default SearchScreen;

@@ -1,6 +1,8 @@
 import React, {Component} from "react";
-import {Text, ScrollView, Button, View, FlatList} from "react-native";
+import {Text, ScrollView, Button, View, FlatList, StyleSheet} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FontAwesome5 } from "@expo/vector-icons";
+
 
 class FriendRequestScreen extends Component{
     constructor(props){
@@ -127,25 +129,26 @@ class FriendRequestScreen extends Component{
         return(
             <View>
                 <ScrollView>
-                    <Text>This is a test for the screen</Text>
                     <FlatList
                         data={this.state.requestList}
                         renderItem={({item}) => (
-                            <View>
-                                <Text>{item.user_id} {item.first_name} {item.last_name}</Text>
-                                <Button
-                                    title="Accept"
+                            <View style={styles.requestContainer}>
+                                <Text style={styles.nameStyle}> {item.first_name} {item.last_name}</Text>
+                                <FontAwesome5
+                                    name="check"
                                     onPress={() => this.acceptFriendRequest(item.user_id)}
+                                    size={30}
                                 />
-                                <Button
-                                    title="Decline"
+                                <FontAwesome5
+                                    name="trash-alt"
                                     onPress={() => this.deleteFriendRequest(item.user_id)}
+                                    size={30}
                                 />
                             </View>
                         )}
                     />
                     <Button
-                        title='Friends'
+                        title='All Friends'
                         onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})} 
                     />
                 </ScrollView>
@@ -153,5 +156,20 @@ class FriendRequestScreen extends Component{
         );
     }
 }
+
+const styles = StyleSheet.create({
+    requestContainer: {
+        flex:1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        margin: 0,
+        justifyContent: 'space-evenly',
+        backgroundColor: 'lightblue'
+    },
+    nameStyle:{
+        fontSize: 18,
+        
+    },
+})
 
 export default FriendRequestScreen;

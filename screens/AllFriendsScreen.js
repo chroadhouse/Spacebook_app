@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Text, Button, TouchableOpacity} from 'react-native'
-import { ScrollView, View, FlatList } from 'react-native-web';
+import { ScrollView, View, FlatList, StyleSheet } from 'react-native-web';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class AllFriendsScreen extends Component {
@@ -73,16 +73,17 @@ class AllFriendsScreen extends Component {
 
     render() {
         return (
-            <View>
+            <View style={{backgroundColor: 'lightblue'}}>
+                <Text style={styles.title}>Friends</Text>
                 <ScrollView>
                 <FlatList
                         data={this.state.listData}
                         renderItem={({item}) => (
-                            <View>
+                            <View style={styles.friendItem}>
                             <TouchableOpacity
                                 onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id})}
                             >
-                            <Text>{item.user_givenname} {item.user_familyname}</Text>
+                            <Text style={styles.friendText}>{item.user_givenname} {item.user_familyname}</Text>
                             </TouchableOpacity>
                             </View>
                         )}
@@ -94,5 +95,26 @@ class AllFriendsScreen extends Component {
     }
 
 }
+
+const styles = StyleSheet.create({
+    title: {
+        color:'steelblue',
+        backgroundColor:'lightblue',
+        padding:10,
+        flex: 1,
+        textAlign: 'center',
+        fontSize:25
+      },
+      friendItem: {
+        padding:15,
+        borderColor: 'steelblue',
+        borderRadius: 1,
+        borderWidth: 1
+    },
+    friendText:{
+        textAlign: 'center',
+        fontSize: 18,
+    }
+})
 
 export default AllFriendsScreen

@@ -45,14 +45,14 @@ function Tabs() {
                 // You can return any component that you like here!
                 return <FontAwesome5 name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: 'tomato',
+                tabBarActiveTintColor: 'steelblue',
                 tabBarInactiveTintColor: 'gray',
             })}
         >
             <Tab.Screen name="profile" component={ProfileScreen} initialParams={{id: -1}} options={{title:'Profile'}} />
             <Tab.Screen name="search" component={SearchScreen} options={{title: 'Search'}} />
             <Tab.Screen name="friends" component={FriendRequestScreen} options={{title: 'Friend Requests'}} />
-            <Tab.Screen name="logout" component={LogoutScreen} options={{title:'Logout'}} />
+            <Tab.Screen name="logout" component={LogoutScreen} options={{title:''}} />
         </Tab.Navigator>
     );
 }
@@ -67,10 +67,10 @@ class App extends Component {
             //Do an if Statement for logged in 
             <NavigationContainer>
                 <Stack.Navigator>
-                    <Stack.Screen name="login" component={LoginScreen} />
-                    <Stack.Screen name="signup" component={SignupScreen} />
+                    <Stack.Screen name="login" component={LoginScreen} options={{headerShown: false}}/>
+                    <Stack.Screen name="signup" component={SignupScreen} options={{headerTitle: ''}}/>
                     <Stack.Screen name="profileScreen" component={Tabs} options={{headerShown: false}} />
-                    <Stack.Screen name="updateUserScreen" component={UpdateUserScreen} />
+                    <Stack.Screen name="updateUserScreen" component={UpdateUserScreen} options={{headerTitle: '' }} />
                     <Stack.Screen name="userScreen" component={ProfileScreen} />
                     <Stack.Screen name="friendsScreen" component={AllFriendsScreen} />
                     <Stack.Screen name="cameraScreen" component={CameraScreen} />

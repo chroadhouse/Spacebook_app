@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Text, Button, Image, StyleSheet, ScrollView,TextInput, FlatList, View, TouchableOpacity} from 'react-native';
+import {Text, Button, Image, StyleSheet, TextInput, FlatList, View, TouchableOpacity, ScrollView, TouchableWithoutFeedback} from 'react-native';
+
 import {FontAwesome5} from '@expo/vector-icons'
 
 class ProfileScreen extends Component{
@@ -290,53 +291,56 @@ class ProfileScreen extends Component{
         if(this.state.myProfile){
             return (
                 <View>
-                  <ScrollView>
-                    <Image
-                      source={{
-                        uri: this.state.photo,
-                      }}
-                      style={{
-                        width: 200,
-                        height: 200,
-                        borderWidth: 5 
-                      }}
-                    />
-                    <Text>{this.state.userInfo.first_name} {this.state.userInfo.last_name}</Text>
-                    <Button
-                      title='Friends'
-                      onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})}
-                    />
-                    <FontAwesome5.Button name={'user-edit'} onPress={() => this.props.navigation.navigate('updateUserScreen')}/>
-                    <Text>Add Post</Text>
-                    <TextInput
-                      placeholder="Add posts"
-                      onChangeText={(value) => this.setState({postInput: value})}
-                      value={this.state.postInput}
-                    />
-                    <Text>{this.state.validationText}</Text>
-                    <Button
-                      title='Add Post'
-                      onPress={() => this.add_post()}
-                    />
-                    <FlatList
-                      data={this.state.postList}
-                      renderItem={({item}) => (
-                        <View>
-                          <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate('singlePostScreen',{item: item.post_id, userInfo: this.state.userInfo.user_id })}
-                          >
-                            <Text>{item.text}</Text>
-                            <Text>{item.numLikes} Likes</Text>
-                          </TouchableOpacity>
-                          {/* <Button
-                            title={this.state.likeTitle}
-                            onPress={() => this.likePost(item)}
-                          /> */}
-                          
-                        </View>
-                      )}
-                    />
-                  </ScrollView>
+                    <View style={styles.container}>
+                        <Image
+                            source={{
+                            uri: this.state.photo,
+                            }}
+                            style = {styles.photoStyle}
+                        />
+                        <Text style={styles.nameStyle}>{this.state.userInfo.first_name} {this.state.userInfo.last_name}</Text>
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            title='Friends'
+                            onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})}
+                            
+                        />
+                        <FontAwesome5 
+                            name={'user-edit'} 
+                            onPress={() => this.props.navigation.navigate('updateUserScreen')}
+                            size={30}
+                            //Background collour needed
+                        />
+                    </View>
+                    <View style={styles.addPostContainer}>
+                        <Text>Add Post</Text>
+                        <TextInput
+                            placeholder="Add posts"
+                            onChangeText={(value) => this.setState({postInput: value})}
+                            value={this.state.postInput}
+                        />
+                        <Text>{this.state.validationText}</Text>
+                        <Button
+                            title='Add Post'
+                            onPress={() => this.add_post()}
+                        />
+                    </View>
+                    <View>
+                        <FlatList
+                            style={{flex: 1}}
+                            data={this.state.postList}
+                            renderItem={({item}) => (
+                                <TouchableOpacity
+                                    style={styles.postItem}
+                                    onPress={() => this.props.navigation.navigate('singlePostScreen',{item: item.post_id, userInfo: this.state.userInfo.user_id, userName: this.state.userInfo.first_name })}
+                                >
+                                    <Text>{item.text}</Text>
+                                    <Text>{item.numLikes} Likes</Text>
+                                </TouchableOpacity>
+                            )}
+                        />
+                    </View>
                 </View>
               );
         }else{
@@ -344,17 +348,15 @@ class ProfileScreen extends Component{
             if(!this.state.isFriends){
                 return(
                     <View>
-                        <Image
-                            source={{
-                                uri: this.state.photo,
-                            }}
-                            style = {{
-                                width: 400,
-                                height: 400,
-                                borderWidth: 5
-                            }}
-                        />
-                        <Text>{this.state.userInfo.first_name}</Text>
+                        <View style={styles.container}>
+                            <Image
+                                source={{
+                                    uri: this.state.photo,
+                                }}
+                                style = {styles.photoStyle}
+                            />
+                            <Text style={styles.nameStyle}>{this.state.userInfo.first_name} {this.state.userInfo.last_name}</Text>
+                        </View>
                         <Button
                             title="Add Friend"
                             onPress = {() => this.addFriend()}
@@ -365,45 +367,51 @@ class ProfileScreen extends Component{
             }else{
                 return(
                     <View>
-                        <Image
-                            source={{
-                                uri: this.state.photo,
-                            }}
-                            style = {{
-                                width: 400,
-                                height: 400,
-                                borderWidth: 5
-                            }}
-                        />
-                        <Text>{this.state.userInfo.user_givenname}</Text>
-                        <Button
-                            title="Friends"
-                            onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})}
-                        />
-                        <Text>Add Post</Text>
-                        <TextInput
-                            placeholder="What do you want to write about"
-                            onChangeText={(postInput) => this.setState({postInput})}
-                            value={this.state.postInput}
-                        />
-                        <Text>{this.state.validationText}</Text>
-                        <Button
-                            title="Add Post"
-                            onPress={() => this.add_post()}
-                        />
-                        <FlatList
-                            data={this.state.postList}
-                            renderItem={({item}) => (
-                                <View>
-                                <TouchableOpacity
-                                    onPress={() => this.props.navigation.navigate('singlePostScreen',{item: item.post_id, userInfo: this.state.userID})}
-                                >
-                                    <Text>{item.text}</Text>
-                                    <Text>{item.numLikes} Likes</Text> 
-                                </TouchableOpacity> 
-                                </View>
-                            )}
-                        />
+                        <View style={styles.container}>
+                            <Image
+                                source={{
+                                    uri: this.state.photo,
+                                }}
+                                style = {styles.photoStyle}
+                            />
+                            <Text style={styles.nameStyle}>{this.state.userInfo.first_name} {this.state.userInfo.last_name}</Text>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                title="Friends"
+                                onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})}
+                            />
+                        </View>
+                        <View style={styles.addPostContainer}> 
+                            <Text>Add Post</Text>
+                            <TextInput
+                                placeholder="Add a [pst"
+                                onChangeText={(postInput) => this.setState({postInput})}
+                                value={this.state.postInput}
+                            />
+                            <Text>{this.state.validationText}</Text>
+                            <Button
+                                title="Add Post"
+                                onPress={() => this.add_post()}
+                            />
+                        </View>
+                        <View style={{flex:1}}>
+                            <TouchableWithoutFeedback>
+                            <FlatList
+                                data={this.state.postList}
+                                renderItem={({item}) => ( 
+                                    <TouchableOpacity
+                                        style={styles.postItem}
+                                        onPress={() => this.props.navigation.navigate('singlePostScreen',{item: item.post_id, userInfo: this.state.userID, userName: this.state.userInfo.first_name})}
+                                    >
+                                        <Text>{item.text}</Text> 
+                                        <Text>{item.numLikes} Likes</Text>
+                                    </TouchableOpacity> 
+
+                                )}
+                            />
+                            </TouchableWithoutFeedback>
+                        </View>
                     </View>
                 );
             }
@@ -411,9 +419,52 @@ class ProfileScreen extends Component{
         }
         
     }
-
-    
-
 }
+
+const styles = StyleSheet.create({
+    photoStyle: {
+        //flex:1,
+        width: 200,
+        height: 200,
+    },
+    postItem: {
+        padding:15,
+        borderColor: 'steelblue',
+        borderRadius: 1,
+        borderWidth: 1
+    },
+    addPostContainer:{
+        flex:1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        margin: 0,
+        justifyContent: 'space-evenly',
+        backgroundColor: 'lightblue'
+    },
+    nameStyle:{
+        flex:1,
+        width:130,
+        height: 110,
+        textAlign: 'center',
+        fontSize: 18,
+        
+    },
+    container: {
+        flex: 1,
+        height: 300,
+        width: 393,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',    
+    },
+    buttonContainer: {
+        flex:1,
+        flexDirection:'row-reverse',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        
+    }
+
+})
 
 export default ProfileScreen;

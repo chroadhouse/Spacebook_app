@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Text, Button, TextInput, View, ScrollView} from 'react-native';
+import {Text, Button, TextInput, View,  StyleSheet} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome5 } from '@expo/vector-icons/';
 
@@ -12,13 +12,14 @@ class SinglePostScreen extends Component{
             //Here i want to do what i did for the user screen 
             userID: this.props.route.params.userInfo,
             postID: this.props.route.params.item,
+            userName: this.props.route.params.userName,
             postData: [],
             postText: "",
+            authorName:"",
             editPost: false,
             userVerifed: false,
             updating: false, 
             likeTitle: "thumbs-up", 
-            numberOfLikes: 0, 
             validationText: "",
             ownProfile: false
         }
@@ -175,6 +176,7 @@ class SinglePostScreen extends Component{
          })
         .then((response) =>{
             if(response.status === 200){
+                this.getPostData()
                 console.log("response is 2000 - good")
             }else if(response.status === 401){
                 this.props.navigation.navigate("login")
@@ -215,12 +217,14 @@ class SinglePostScreen extends Component{
             if(id == responseJson.author.user_id){
                 this.setState({
                     postData: responseJson,
-                    userVerifed: true
+                    userVerifed: true,
+                    authorName: responseJson.author.first_name
                 })
             }else{
                 this.setState({
                     postData: responseJson,
-                    userVerifed: false
+                    userVerifed: false,
+                    authorName: responseJson.author.first_name
                 })
             }
             
@@ -237,14 +241,21 @@ class SinglePostScreen extends Component{
         if(this.state.userVerifed){
             if(!this.state.editPost){
                 return(
-                    <ScrollView>
+                    <View>
+                        <View>
+                            <Text style={styles.label}>Posted to {this.state.userName}'s wall</Text>
+                            <Text style={styles.label}>By {this.state.authorName}</Text>
+                        </View>
+                        
                         <TextInput
+                            style={styles.postStyle}
                             multiline
                             editable={this.state.editPost}
                             numberOfLines={4}
                             onChangeText={(value) => this.setState({postText: value})}
                             defaultValue={this.state.postData.text}
                         />
+                        <Text style={styles.label}>Likes: {this.state.postData.numLikes}</Text>
                         <Button
                             title="Update"
                             onPress={(value) => this.setState({editPost: value})}
@@ -255,12 +266,17 @@ class SinglePostScreen extends Component{
                             title="Delete"
                             onPress={() => this.deletePost()}
                         />
-                    </ScrollView>
+                    </View>
                 )
             }else{
                 return(
-                    <ScrollView>
+                    <View>
+                        <View>
+                            <Text style={styles.label}>Posted to {this.state.userName}'s wall</Text>
+                            <Text style={styles.label}>By {this.state.authorName}</Text>
+                        </View>
                         <TextInput
+                            style={styles.postStyle}
                             multiline
                             editable={this.state.editPost}
                             numberOfLines={4}
@@ -268,6 +284,7 @@ class SinglePostScreen extends Component{
                             defaultValue={this.state.postData.text}
                         />
                         <Text>{this.state.validationText}</Text>
+                        <Text style={styles.label}>Likes: {this.state.postData.numLikes}</Text>
                         <Button
                             title="Save"
                             onPress={() => this.updatePost()}
@@ -277,40 +294,64 @@ class SinglePostScreen extends Component{
                             onPress={(value) => this.setState({editPost: false}, () => this.getPostData())}Yea
                             value={this.state.editPost}
                         />
-                    </ScrollView>
+                    </View>
                 )
             }
         }else{
             if(!this.state.ownProfile){
                 return(
-                    <ScrollView>
+                    <View>
+                        <View>
+                            <Text style={styles.label}>Posted to {this.state.userName}'s wall</Text>
+                            <Text style={styles.label}>By {this.state.authorName}</Text>
+                        </View>
                         <TextInput
+                            style={styles.postStyle}
                             multiline
                             editable={false}
                             numberOfLines={4}
                             defaultValue={this.state.postData.text}
                         />
-                        {/* <Button
-                            title={this.state.likeTitle}
+                        <Text style={styles.label}>Likes: {this.state.postData.numLikes}</Text>
+                        <FontAwesome5
+                            name={this.state.likeTitle}
                             onPress={() => this.likePost()}
-                        /> */}
-                        <FontAwesome5.Button name={this.state.likeTitle} onPress={() => this.likePost()}/>
-                    </ScrollView>
+                            size={30}
+                        />
+                    </View>
                 )
             }else{
                 return(
-                    <ScrollView>
+                    <View>
+                        <View>
+                            <Text style={styles.label}>Posted to {this.state.userName}'s wall</Text>
+                            <Text style={styles.label}>By {this.state.authorName}</Text>
+                        </View>
                         <TextInput
+                            style={styles.postStyle}
                             multiline
                             editable={false}
                             numberOfLines={4}
                             defaultValue={this.state.postData.text}
                         />
-                    </ScrollView>
+                        <Text style={styles.label}>Likes: {this.state.postData.numLikes}</Text>
+                    </View>
                 )
             }
         }
     }
 }
+
+const styles = StyleSheet.create({
+    label: {
+        fontSize:15,
+        color:'steelblue'
+    },
+    postStyle: {
+        borderWidth:1,
+        borderColor: 'lightblue',
+        borderRadius:5,
+      }
+})
 
 export default SinglePostScreen;

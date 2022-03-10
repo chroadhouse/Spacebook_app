@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Text, Button, TextInput, View} from "react-native";
+import {Text, Button, TextInput, View, StyleSheet} from "react-native";
 
 class UpdateUserScreen extends Component{
   constructor(props){
@@ -184,44 +184,90 @@ class UpdateUserScreen extends Component{
   render(){
     return(
       <View>
-        <Text>First Name</Text>
-        <TextInput
+        <Text style={styles.title}>SPACEBOOK</Text>
+
+        <View style={styles.formItem}>
+          <Text style={styles.formLabel}>First Name</Text>
+          <TextInput
+            style={styles.formInput}
             onChangeText={(value) => this.setState({first_name: value})}
             defaultValue={this.state.first_name_og}
-        />
-        <Text>Last Name</Text>
-        <TextInput
+          />
+        </View>
+
+        <View style={styles.formItem}>
+          <Text style={styles.formLabel}>Last Name</Text>
+          <TextInput
             defaultValue={this.state.last_name_og}
             onChangeText={(value) => this.setState({last_name: value})}
-        />
-        <Text>Email</Text>
-        <TextInput
+          />
+        </View>
+
+        <View style={styles.formItem}>
+          <Text style={styles.formLabel}>Email</Text>
+          <TextInput
+            style={styles.formInput}
             onChangeText={(value) => this.setState({email: value})}
             defaultValue={this.state.email_og}
-        />
+          />
+        </View>
 
-        <Text>Update a new Password</Text>
-        <TextInput
+        <View style={styles.formItem}>
+          <Text style={styles.formLabel}>Update a new Password</Text>
+          <TextInput
+            style={styles.formInput}
             placeholder="Password here"
             onChangeText={(value) => this.setState({password: value})}
+          />
+        </View>
+
+        <View style={styles.formItem}>
+          <Text style={styles.formLabel}>Verify Password</Text>
+          <TextInput
+            style={styles.formInput}
+            placeholder="Password Here"
+            onChangeText={(value) => this.setState({password_verify: value})}
+          />
+        </View>
+        <Button
+          title="Save Data"
+          onPress={() => this.updateUser()}
         />
         <Button
           title="Update Profile Photo"
           onPress={() => this.props.navigation.navigate('cameraScreen')}
         />
-        <Text>Verify Password</Text>
-        <TextInput
-          placeholder="Password Here"
-          onChangeText={(value) => this.setState({password_verify: value})}
-        />
-        <Button
-            title="Save Data"
-            onPress={() => this.updateUser()}
-        />
+        
         <Text>{this.state.validationText}</Text>
     </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  title: {
+    color:'steelblue',
+    backgroundColor:'lightblue',
+    padding:10,
+    flex: 1,
+    justifyContent: 'center',
+    fontSize:25
+  },
+  formItem: {
+    padding:25,
+    borderColor: 'steelblue',
+    borderRadius: 3,
+    borderWidth: 1
+  },
+  formLabel: {
+    fontSize:15,
+    color:'steelblue'
+  },
+  formInput: {
+    borderWidth:1,
+    borderColor: 'lightblue',
+    borderRadius:5,
+  }
+})
 
 export default UpdateUserScreen;
