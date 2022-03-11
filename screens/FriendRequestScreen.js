@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Text, ScrollView, Button, View, FlatList, StyleSheet} from "react-native";
+import {Text, Button, View, FlatList, StyleSheet} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome5 } from "@expo/vector-icons";
 
@@ -63,17 +63,11 @@ class FriendRequestScreen extends Component{
             })
         })
         .catch((error) => {
-            console.log("Something is going wrog")
             console.log(error);
         })
     }
 
     acceptFriendRequest =  async (requestID) =>{
-        //Once the request is accepted need to recall the get data 
-        //Here the friend request is accepteds
-        console.log("Method is working")
-        console.log(requestID)
-        
         const token = await AsyncStorage.getItem('@session_token');
         return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+ requestID, {
             'method': 'post',
@@ -128,30 +122,29 @@ class FriendRequestScreen extends Component{
     render(){
         return(
             <View>
-                <ScrollView>
-                    <FlatList
-                        data={this.state.requestList}
-                        renderItem={({item}) => (
-                            <View style={styles.requestContainer}>
-                                <Text style={styles.nameStyle}> {item.first_name} {item.last_name}</Text>
-                                <FontAwesome5
-                                    name="check"
-                                    onPress={() => this.acceptFriendRequest(item.user_id)}
-                                    size={30}
-                                />
-                                <FontAwesome5
-                                    name="trash-alt"
-                                    onPress={() => this.deleteFriendRequest(item.user_id)}
-                                    size={30}
-                                />
-                            </View>
-                        )}
-                    />
-                    <Button
-                        title='All Friends'
-                        onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})} 
-                    />
-                </ScrollView>
+                <Text style={styles.title}>Friend Requests</Text>
+                <FlatList
+                    data={this.state.requestList}
+                    renderItem={({item}) => (
+                        <View style={styles.requestContainer}>
+                            <Text style={styles.nameStyle}> {item.first_name} {item.last_name}</Text>
+                            <FontAwesome5
+                                name="check"
+                                onPress={() => this.acceptFriendRequest(item.user_id)}
+                                size={30}
+                            />
+                            <FontAwesome5
+                                name="trash-alt"
+                                onPress={() => this.deleteFriendRequest(item.user_id)}
+                                size={30}
+                            />
+                        </View>
+                    )}
+                />
+                <Button
+                    title='All Friends'
+                    onPress={() => this.props.navigation.navigate('friendsScreen',{userID: this.state.userID})} 
+                />
             </View>
         );
     }
@@ -168,8 +161,15 @@ const styles = StyleSheet.create({
     },
     nameStyle:{
         fontSize: 18,
-        
     },
+    title: {
+        color:'steelblue',
+        backgroundColor:'lightblue',
+        padding:10,
+        flex: 1,
+        textAlign: 'center',
+        fontSize:25
+      },
 })
 
 export default FriendRequestScreen;

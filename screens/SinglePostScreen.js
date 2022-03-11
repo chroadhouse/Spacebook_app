@@ -8,14 +8,13 @@ class SinglePostScreen extends Component{
     constructor(props){
         super(props);
 
-        this.state = {
-            //Here i want to do what i did for the user screen 
+        this.state = { 
             userID: this.props.route.params.userInfo,
             postID: this.props.route.params.item,
             userName: this.props.route.params.userName,
             postData: [],
             postText: "",
-            authorName:"",
+            authorName: "",
             editPost: false,
             userVerifed: false,
             updating: false, 
@@ -52,12 +51,10 @@ class SinglePostScreen extends Component{
         this.setState({validationText: ""})
         if(this.state.postText != ""){
             if(this.state.postText != this.state.postData.text){
-                //Doesn't need updating
                 let to_send = {}
                 to_send['text'] = this.state.postText
                 const token = await AsyncStorage.getItem('@session_token');
                 
-                console.log(JSON.stringify(to_send))
                 return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID,{
                     'method': 'PATCH',
                     'headers': {
@@ -70,7 +67,7 @@ class SinglePostScreen extends Component{
                     if(response.status === 200){
                         console.log('Good response')
                     }else if(response.status === 400){
-
+                        console.log("Bad Request")
                     }else if(response.status === 401){
                         this.props.navigation.navigate("Login")
                     }else if(response.status === 403){
@@ -92,7 +89,6 @@ class SinglePostScreen extends Component{
     }
 
     deletePost = async () =>{
-        //Delete
         const token = await AsyncStorage.getItem('@session_token');
         return fetch("http://localhost:3333/api/1.0.0/user/"+this.state.userID+"/post/"+this.state.postID, {
             'method': 'Delete',
@@ -120,8 +116,7 @@ class SinglePostScreen extends Component{
     }
 
     checkLiked = async () =>{
-        //Check whether they have being liked or not 
-        //not liked - will like 
+        //Checks if liked to change the button icon
         const id = await AsyncStorage.getItem('user_id')
         const token = await AsyncStorage.getItem('@session_token')
         if(id != this.state.userID){
@@ -234,9 +229,6 @@ class SinglePostScreen extends Component{
         })
     }
 
-
-    //Must be able to still like and unlike on this screen - Can be done lateer 
-    //Conditional rendering if the author is the same as the user logged in 
     render(){
         if(this.state.userVerifed){
             if(!this.state.editPost){

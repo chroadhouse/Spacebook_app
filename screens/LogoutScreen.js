@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Text, ScrollView, Button, StyleSheet, View} from 'react-native';
+import {Text, Button, StyleSheet, View} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class LogoutScreen extends Component {
@@ -57,19 +57,17 @@ class LogoutScreen extends Component {
     render(){
         return (
             <View>
-                <ScrollView>
-                    <Text style={styles.title}>LOGOUT</Text>
-                    <Text style={styles.messageText}>Are you sure you want to log out? </Text>
-                    <Button
-                        title="Yes"
-                        onPress={() => this.logout()}
-                    />
-                    <Button
-                        title="No"
-                        color="darkblue"
-                        onPress={() => this.props.navigation.navigate("profile")}
-                    />
-                </ScrollView>
+                <Text style={styles.title}>LOGOUT</Text>
+                <Text style={styles.messageText}>Are you sure you want to log out? </Text>
+                <Button
+                    title="Yes"
+                    onPress={() => this.logout()}
+                />
+                <Button
+                    title="No"
+                    color="darkblue"
+                    onPress={() => this.props.navigation.navigate("profile")}
+                />
             </View>
         )
     }

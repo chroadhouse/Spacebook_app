@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 class CameraScreen extends Component{
     constructor(props){
         super(props);
@@ -45,7 +44,6 @@ class CameraScreen extends Component{
     }
 
     sendToServer = async (data) => {
-        // Get these from AsyncStorage
         const token = await AsyncStorage.getItem('@session_token');
         const id = await AsyncStorage.getItem('user_id');
   
@@ -61,7 +59,6 @@ class CameraScreen extends Component{
             body: blob
         })
         .then((response) => {
-            console.log("Picture added", response);
             if(response.status === 200){
                 console.log("Photo looking good")
             }else if(response.status === 400){
@@ -105,12 +102,8 @@ class CameraScreen extends Component{
                 <Text>Camera does not have permission</Text>
             )
         }
-
     }
-
 }
-
-export default CameraScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -135,3 +128,5 @@ const styles = StyleSheet.create({
       color: 'white',
     },
   });
+
+export default CameraScreen;

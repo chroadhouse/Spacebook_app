@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView, Text, Button, TextInput, FlatList, View, Switch, TouchableOpacity, StyleSheet } from 'react-native-web';
+import { Text, Button, TextInput, FlatList, View, Switch, TouchableOpacity, StyleSheet } from 'react-native-web';
 
 class SearchScreen extends Component {
     constructor(props){
@@ -14,7 +14,7 @@ class SearchScreen extends Component {
             validationText: "",
             limit: 5,
             offset: 0,
-            nextDisabled: false,
+            nextDisabled: true,
             backDisabled: true
 
         }
@@ -31,7 +31,9 @@ class SearchScreen extends Component {
     }
     
     getData = async (page) => {
-        
+        //- 1 go back
+        //0 just search
+        //1 next page
         if(page == -1){
             let temp = this.state.offset - this.state.limit
             this.setState({
@@ -46,7 +48,7 @@ class SearchScreen extends Component {
         }else if(page ==0){
             this.setState({
                 offset: 0,
-                
+                nextDisabled: false
             })
         }else if(page == 1){
             let temp = this.state.offset + this.state.limit
@@ -55,13 +57,11 @@ class SearchScreen extends Component {
                 backDisabled: false
             }) 
         }
-        
         this.setState({validationText: ""})
         let searchMethod = 'all'
         if(this.state.friendSearch){
             searchMethod = 'friends'
         }
-        
         if(this.state.userInput !== ""){
             const value = await AsyncStorage.getItem('@session_token');
             return fetch(`http://localhost:3333/api/1.0.0/search?q=${this.state.userInput}&search_in=${searchMethod}&limit=${this.state.limit}&offset=${this.state.offset}`,{
@@ -71,6 +71,9 @@ class SearchScreen extends Component {
             })
             .then((response) => {
                 if(response.status ===200){
+                    this.setState({
+                        userInput: ""
+                    })
                     return response.json()
                 }else if(response.status === 400){
                     console.log("Bad Request")
@@ -94,7 +97,6 @@ class SearchScreen extends Component {
                         limit: 5
                     })
                 }
-                
             })
             .catch((error) => {
                 console.log(error);
@@ -118,56 +120,54 @@ class SearchScreen extends Component {
     render() {
         return(
             <View style={{backgroundColor: 'lightblue'}}>
-                <ScrollView>
-                    <View style={styles.searchContainer}>
-                        <Button
-                            title="Search:"
-                            onPress = {() => this.getData(0)}
-                        />
-                        <TextInput
-                            style = {styles.searchBoxStyle}
-                            placeholder="Enter name to search for"
-                            onChangeText={(userInput) => this.setState({userInput})}
-                            value={this.state.userInput}
-                        />
-                    </View>
-                    <View style={styles.toggleContainer}>
-                        <Text>Friends</Text>
-                        <Switch
-                            trackColor={{ false: "#767577", true: "#81b0ff" }}
-                            thumbColor={this.state.friendSearch ? "#f5dd4b" : "#f4f3f4"}
-                            value={this.state.friendSearch}
-                            onValueChange = {(value) => this.setState({friendSearch: value})}
-                            
-                        />
-                        
-                        <Text>{this.state.validationText}</Text>
-                    </View>
-                    <FlatList
-                        data={this.state.listData}
-                        renderItem={({item}) => (
-                            <View style={styles.searchItem}>
-                            <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id })}
-                            >
-                            <Text style={styles.searchText}>{item.user_givenname} {item.user_familyname}</Text>
-                            </TouchableOpacity>
-                            </View>
-                        )}
+                <View style={styles.searchContainer}>
+                    <Button
+                        title="Search:"
+                        onPress = {() => this.getData(0)}
                     />
-                    <View style={styles.buttonContainer}>
-                        <Button
-                            title='Back'
-                            onPress={() => this.getData(-1)}
-                            disabled={this.state.backDisabled}
-                        />
-                        <Button
-                            title='Next'
-                            onPress={() => this.getData(1)}
-                            disabled={this.state.nextDisabled}
-                        />
-                    </View>
-                </ScrollView>
+                    <TextInput
+                        style = {styles.searchBoxStyle}
+                        placeholder="Enter name to search for"
+                        onChangeText={(userInput) => this.setState({userInput})}
+                        value={this.state.userInput}
+                    />
+                </View>
+                <View style={styles.toggleContainer}>
+                    <Text>Friends</Text>
+                    <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={this.state.friendSearch ? "#f5dd4b" : "#f4f3f4"}
+                        value={this.state.friendSearch}
+                        onValueChange = {(value) => this.setState({friendSearch: value})}
+                        
+                    />
+                    
+                    <Text>{this.state.validationText}</Text>
+                </View>
+                <FlatList
+                    data={this.state.listData}
+                    renderItem={({item}) => (
+                        <View style={styles.searchItem}>
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id })}
+                        >
+                        <Text style={styles.searchText}>{item.user_givenname} {item.user_familyname}</Text>
+                        </TouchableOpacity>
+                        </View>
+                    )}
+                />
+                <View style={styles.buttonContainer}>
+                    <Button
+                        title='Back'
+                        onPress={() => this.getData(-1)}
+                        disabled={this.state.backDisabled}
+                    />
+                    <Button
+                        title='Next'
+                        onPress={() => this.getData(1)}
+                        disabled={this.state.nextDisabled}
+                    />
+                </View>   
             </View>
         );      
       }
@@ -177,14 +177,12 @@ const styles = StyleSheet.create({
     searchContainer:{
         flexDirection: 'row',
         height: 30,
-       // justifyContent: 'space-between' 
     },
     searchBoxStyle: {
         width: 300
     },
     toggleContainer: {
         flexDirection: 'row',
-        //height: 30
         padding: 5
     },
     buttonContainer: {

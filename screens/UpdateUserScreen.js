@@ -34,7 +34,6 @@ class UpdateUserScreen extends Component{
   }
     
   getData = async () => {
-    //This is just a generic statment I think 
     const token = await AsyncStorage.getItem('@session_token');
     const id = await AsyncStorage.getItem('user_id');
     return fetch("http://localhost:3333/api/1.0.0/user/" + id,{
@@ -68,7 +67,6 @@ class UpdateUserScreen extends Component{
 
 
   updateUser = async() =>{
-
     this.setState({
       validationText: ""
     })

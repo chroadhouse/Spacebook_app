@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import {Text, Button, TouchableOpacity} from 'react-native'
-import { ScrollView, View, FlatList, StyleSheet } from 'react-native-web';
+import {Text, TouchableOpacity} from 'react-native'
+import { View, FlatList, StyleSheet } from 'react-native-web';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class AllFriendsScreen extends Component {
@@ -34,9 +34,7 @@ class AllFriendsScreen extends Component {
     };
     
     getData = async () => {
-        //This is just a generic statment I think 
         const token = await AsyncStorage.getItem('@session_token');
-        //const id = await AsyncStorage.getItem('user_id');
         return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.userID+"/friends",{
             'method': 'get',
             'headers': {
@@ -75,25 +73,22 @@ class AllFriendsScreen extends Component {
         return (
             <View style={{backgroundColor: 'lightblue'}}>
                 <Text style={styles.title}>Friends</Text>
-                <ScrollView>
                 <FlatList
-                        data={this.state.listData}
-                        renderItem={({item}) => (
-                            <View style={styles.friendItem}>
-                            <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id})}
-                            >
-                            <Text style={styles.friendText}>{item.user_givenname} {item.user_familyname}</Text>
-                            </TouchableOpacity>
-                            </View>
-                        )}
-                    />
-                </ScrollView>
+                    data={this.state.listData}
+                    renderItem={({item}) => (
+                        <View style={styles.friendItem}>
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('userScreen',{id: item.user_id})}
+                        >
+                        <Text style={styles.friendText}>{item.user_givenname} {item.user_familyname}</Text>
+                        </TouchableOpacity>
+                        </View>
+                    )}
+                />
             </View>
 
         );
     }
-
 }
 
 const styles = StyleSheet.create({

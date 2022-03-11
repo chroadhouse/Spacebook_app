@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text, ScrollView, TextInput, Button, StyleSheet, View } from 'react-native-web';
+import { Text, TextInput, Button, StyleSheet, View } from 'react-native-web';
 
 class LoginScreen extends Component{
   constructor(props){
@@ -9,8 +9,7 @@ class LoginScreen extends Component{
     this.state = {
       email: "",
       password: "",
-      validationText: ""
-      
+      validationText: ""  
     }
   }
 
@@ -83,6 +82,7 @@ class LoginScreen extends Component{
             style={styles.formInput}
           />
         </View>
+        
         <Button
           title="Login"
           onPress={() => this.login()}
